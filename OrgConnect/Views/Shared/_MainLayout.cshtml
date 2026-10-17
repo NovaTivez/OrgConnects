@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - OrgConnect</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/OrgConnect.css?v=6")" />
+</head>
+
+<body ng-app="OrgConnectModule" ng-controller="OrgConnectController">
+    <header>
+        <nav class="orgconnect-nav z-depth-0">
+            <div class="nav-wrapper orgconnect-header-inner">
+                <a href="@Url.Action("Index", "Main")" class="brand-logo orgconnect-brand">
+                    <span class="brand-mark"><i class="material-icons">hub</i></span>
+                    <span>OrgConnect</span>
+                </a>
+
+                <a href="#" data-target="mobile-navigation" class="sidenav-trigger">
+                    <i class="material-icons">menu</i>
+                </a>
+
+                <ul class="right hide-on-med-and-down nav-links">
+                    <li><a href="@Url.Action("Index", "Main")">Home</a></li>
+                    <li><a href="@Url.Action("AboutPage", "Main")">About</a></li>
+                    <li><a href="@Url.Action("ContactPage", "Main")">Contact</a></li>
+                    <li>
+                        <a href="@Url.Action("LoginPage", "Main")" class="nav-login-button waves-effect">
+                            <i class="material-icons">login</i>
+                            <span>Login</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <ul class="sidenav" id="mobile-navigation">
+            <li>
+                <div class="orgconnect-mobile-header">
+                    <div class="brand-mark"><i class="material-icons">hub</i></div>
+                    <strong>OrgConnect</strong>
+                    <span>Organization Member Management</span>
+                </div>
+            </li>
+            <li><a href="@Url.Action("Index", "Main")"><i class="material-icons">home</i>Home</a></li>
+            <li><a href="@Url.Action("AboutPage", "Main")"><i class="material-icons">info</i>About</a></li>
+            <li><a href="@Url.Action("ContactPage", "Main")"><i class="material-icons">contact_mail</i>Contact</a></li>
+            <li><div class="divider"></div></li>
+            <li><a href="@Url.Action("LoginPage", "Main")"><i class="material-icons">login</i>Login</a></li>
+        </ul>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="page-footer orgconnect-footer">
+        <div class="container footer-main">
+            <div class="row">
+                <div class="col s12 l5 footer-intro">
+                    <a href="@Url.Action("Index", "Main")" class="footer-brand">
+                        <span class="brand-mark"><i class="material-icons">hub</i></span>
+                        OrgConnect
+                    </a>
+                    <p>A simple and connected space for organizing members, committees, and organization records.</p>
+                </div>
+
+                <div class="col s6 m4 l2 offset-l1">
+                    <h6>Explore</h6>
+                    <ul>
+                        <li><a href="@Url.Action("Index", "Main")">Home</a></li>
+                        <li><a href="@Url.Action("AboutPage", "Main")">About</a></li>
+                        <li><a href="@Url.Action("ContactPage", "Main")">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="col s6 m4 l2">
+                    <h6>Members</h6>
+                    <ul>
+                        <li><a href="@Url.Action("RegistrationPage", "Main")">Registration</a></li>
+                        <li><a href="@Url.Action("LoginPage", "Main")">Member Login</a></li>
+                    </ul>
+                </div>
+
+                <div class="col s12 m4 l2 footer-contact">
+                    <h6>Contact</h6>
+                    <p><i class="material-icons">email</i> orgconnect@email.com</p>
+                    <p><i class="material-icons">location_on</i> Manila, Philippines</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-copyright">
+            <div class="container">
+                <span>© @DateTime.Now.Year OrgConnect</span>
+                <span class="right hide-on-small-only">Built with ASP.NET MVC, AngularJS, and Materialize</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="@Url.Content("~/Scripts/jquery-3.7.0.min.js")"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="@Url.Content("~/Scripts/angular.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/HolyScripts/Module.js")"></script>
+    <script src="@Url.Content("~/Scripts/HolyScripts/Service.js")"></script>
+    <script src="@Url.Content("~/Scripts/HolyScripts/Controller.js")"></script>
+
+    <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    var materialize = Function("return window.M;")();
+
+                    if (materialize) {
+                        var sidenavElements =
+                            document.querySelectorAll(".sidenav");
+
+                        materialize.Sidenav.init(sidenavElements);
+                    }
+                });
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

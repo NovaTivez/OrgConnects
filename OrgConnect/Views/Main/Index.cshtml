@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<section class="home-hero">
+    <div class="container">
+        <div class="row valign-wrapper home-hero-row">
+            <div class="col s12 l6 hero-copy">
+                <span class="eyebrow"><i class="material-icons tiny">auto_awesome</i> BUILD A STRONGER COMMUNITY</span>
+                <h1>@ViewBag.WelcomeMessage</h1>
+                <p>Bring member information, committees, and organization roles together in one organized and accessible place.</p>
+
+                <div class="hero-actions">
+                    <a href="@Url.Action("RegistrationPage", "Main")"
+                       class="btn-large waves-effect waves-light primary-button">
+                        Manage Members <i class="material-icons right">arrow_forward</i>
+                    </a>
+                    <a href="@Url.Action("AboutPage", "Main")"
+                       class="btn-large waves-effect secondary-button">Explore OrgConnect</a>
+                </div>
+
+                <div class="hero-trust-row">
+                    <div class="avatar-stack">
+                        <span>AM</span><span>JD</span><span>KL</span><span>+</span>
+                    </div>
+                    <p><strong>Simple member management</strong><br />Designed for student organizations</p>
+                </div>
+            </div>
+
+            <div class="col s12 l6 hero-media">
+                <div class="hero-image-frame">
+                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=85"
+                         alt="Organization members working together" />
+                    <div class="hero-floating-card hero-member-card">
+                        <span class="floating-icon"><i class="material-icons">groups</i></span>
+                        <div><strong>Connected members</strong><small>One shared organization space</small></div>
+                    </div>
+                    <div class="hero-floating-card hero-status-card">
+                        <i class="material-icons">verified</i>
+                        <div><strong>Organized records</strong><small>Easy to create and update</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="stats-strip">
+    <div class="container">
+        <div class="row stats-row">
+            <div class="col s6 m3 stat-item"><i class="material-icons">groups</i><div><strong>Members</strong><span>Centralized records</span></div></div>
+            <div class="col s6 m3 stat-item"><i class="material-icons">account_tree</i><div><strong>7 Committees</strong><span>Clear assignments</span></div></div>
+            <div class="col s6 m3 stat-item"><i class="material-icons">manage_accounts</i><div><strong>Full CRUD</strong><span>Create to delete</span></div></div>
+            <div class="col s6 m3 stat-item"><i class="material-icons">devices</i><div><strong>Responsive</strong><span>Works on any screen</span></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section-space programs-section">
+    <div class="container">
+        <div class="section-heading center-align">
+            <span class="eyebrow">ORGANIZATION TOOLS</span>
+            <h2>Everything needed to manage members</h2>
+            <p>Focused features keep your organization records useful, clear, and easy to maintain.</p>
+        </div>
+
+        <div class="row feature-grid">
+            <div class="col s12 m4">
+                <div class="feature-tile">
+                    <span class="tile-icon blue-icon"><i class="material-icons">person_add</i></span>
+                    <h5>Register Members</h5>
+                    <p>Add essential member details with clear AngularJS validation.</p>
+                    <a href="@Url.Action("RegistrationPage", "Main")">Start registration <i class="material-icons tiny">arrow_forward</i></a>
+                </div>
+            </div>
+            <div class="col s12 m4">
+                <div class="feature-tile">
+                    <span class="tile-icon gold-icon"><i class="material-icons">edit_note</i></span>
+                    <h5>Update Records</h5>
+                    <p>Load an existing member into the form and save changes instantly.</p>
+                    <a href="@Url.Action("RegistrationPage", "Main")">Manage records <i class="material-icons tiny">arrow_forward</i></a>
+                </div>
+            </div>
+            <div class="col s12 m4">
+                <div class="feature-tile">
+                    <span class="tile-icon green-icon"><i class="material-icons">account_tree</i></span>
+                    <h5>Organize Committees</h5>
+                    <p>Assign every member to an appropriate committee and position.</p>
+                    <a href="@Url.Action("AboutPage", "Main")">Learn more <i class="material-icons tiny">arrow_forward</i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-space why-section">
+    <div class="container">
+        <div class="row valign-wrapper why-row">
+            <div class="col s12 l6">
+                <div class="why-image">
+                    <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85"
+                         alt="Organization team meeting" />
+                    <div class="image-badge"><strong>100%</strong><span>Client-side CRUD</span></div>
+                </div>
+            </div>
+            <div class="col s12 l6 why-copy">
+                <span class="eyebrow">WHY ORGCONNECT</span>
+                <h2>Less paperwork. More connection.</h2>
+                <p>OrgConnect demonstrates how ASP.NET MVC and AngularJS can work together in one connected and user-friendly application.</p>
+                <ul class="check-list">
+                    <li><i class="material-icons">check_circle</i> Fast and validated member registration</li>
+                    <li><i class="material-icons">check_circle</i> Dynamic AngularJS member table</li>
+                    <li><i class="material-icons">check_circle</i> Easy editing and confirmed deletion</li>
+                    <li><i class="material-icons">check_circle</i> Consistent responsive Materialize design</li>
+                </ul>
+                <a href="@Url.Action("AboutPage", "Main")" class="btn waves-effect primary-button">About the system</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container home-cta">
+    <div>
+        <span class="cta-icon"><i class="material-icons">diversity_3</i></span>
+        <div><h4>Ready to organize your members?</h4><p>Create your first member record and see the table update instantly.</p></div>
+    </div>
+    <a href="@Url.Action("RegistrationPage", "Main")" class="btn-large waves-effect cta-button">Register now <i class="material-icons right">arrow_forward</i></a>
+</section>

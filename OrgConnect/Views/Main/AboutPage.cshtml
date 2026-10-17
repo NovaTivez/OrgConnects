@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "About";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<section class="inner-hero">
+    <div class="container center-align">
+        <span class="eyebrow light-eyebrow">ABOUT THE PLATFORM</span>
+        <h1>Built to keep organizations connected</h1>
+        <p>Discover the purpose, features, and technologies behind OrgConnect.</p>
+    </div>
+</section>
+
+<section class="section-space">
+    <div class="container">
+        <div class="row valign-wrapper about-intro-row">
+            <div class="col s12 l6">
+                <div class="about-photo">
+                    <img src="https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&w=1200&q=85"
+                         alt="Student organization members" />
+                    <div class="about-photo-label"><i class="material-icons">hub</i><span>One connected system</span></div>
+                </div>
+            </div>
+            <div class="col s12 l6 about-copy">
+                <span class="eyebrow">OUR PURPOSE</span>
+                <h2>Simple member management for a stronger community</h2>
+                <p>OrgConnect is an organization member management system that makes registration and record maintenance organized and accessible.</p>
+                <p>Members can be added, displayed, edited, and removed through an AngularJS array. For this activity, no database is required.</p>
+                <a href="@Url.Action("RegistrationPage", "Main")" class="btn waves-effect primary-button">Manage members</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-space soft-section">
+    <div class="container">
+        <div class="section-heading center-align">
+            <span class="eyebrow">CORE CAPABILITIES</span>
+            <h2>Designed around essential organization tasks</h2>
+        </div>
+        <div class="row feature-grid">
+            <div class="col s12 m4"><div class="feature-tile"><span class="tile-icon blue-icon"><i class="material-icons">how_to_reg</i></span><h5>Validated Registration</h5><p>Required, length, pattern, email, and uniqueness rules help keep records accurate.</p></div></div>
+            <div class="col s12 m4"><div class="feature-tile"><span class="tile-icon gold-icon"><i class="material-icons">sync_alt</i></span><h5>Complete CRUD</h5><p>Create, read, update, and delete member objects from the AngularJS collection.</p></div></div>
+            <div class="col s12 m4"><div class="feature-tile"><span class="tile-icon green-icon"><i class="material-icons">route</i></span><h5>Connected Pages</h5><p>Login, Home, Registration, About, and Contact work as one navigable system.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section-space technology-section">
+    <div class="container">
+        <div class="section-heading center-align"><span class="eyebrow">TECHNOLOGY</span><h2>Tools used to build OrgConnect</h2></div>
+        <div class="technology-grid">
+            <div><i class="material-icons">language</i><span>ASP.NET MVC</span></div>
+            <div><i class="material-icons">code</i><span>C#</span></div>
+            <div><i class="material-icons">data_object</i><span>AngularJS</span></div>
+            <div><i class="material-icons">html</i><span>HTML5</span></div>
+            <div><i class="material-icons">palette</i><span>Materialize CSS</span></div>
+            <div><i class="material-icons">javascript</i><span>JavaScript</span></div>
+        </div>
+    </div>
+</section>
