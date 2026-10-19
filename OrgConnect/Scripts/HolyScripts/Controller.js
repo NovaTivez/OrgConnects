@@ -1,92 +1,6 @@
 ﻿app.controller("OrgConnectController",
     function ($scope, OrgConnectService) {
 
-        function showMessage(title, text, icon) {
-            return Swal.fire({
-                title: title,
-                text: text,
-                icon: icon,
-                confirmButtonColor: "#0a4caf"
-            });
-        }
-
-        function updateLabels() {
-            setTimeout(function () {
-                if (window.M && window.M.updateTextFields) {
-                    window.M.updateTextFields();
-                }
-            }, 0);
-        }
-
-        function getMemberData() {
-            return {
-                MemberID: $scope.memberID.toUpperCase(),
-                FName: $scope.firstName,
-                LName: $scope.lastName,
-                Username: $scope.username,
-                Email: $scope.email.trim().toLowerCase(),
-                ContactNumber: $scope.contactNumber,
-                Password: $scope.password,
-                Committee: $scope.committee,
-                Position: $scope.position
-            };
-        }
-
-        function formIsInvalid(registrationForm) {
-            if (registrationForm.$invalid) {
-                showMessage(
-                    "Invalid Information",
-                    "Please correct the highlighted fields.",
-                    "error"
-                );
-                return true;
-            }
-
-            return false;
-        }
-
-        // checks every field that must be unique
-        function hasDuplicateInformation() {
-            if ($scope.isDuplicateMemberID()) {
-                showMessage(
-                    "Duplicate Member ID",
-                    "The entered Member ID already exists.",
-                    "error"
-                );
-                return true;
-            }
-
-            if ($scope.isDuplicateUsername()) {
-                showMessage(
-                    "Duplicate Username",
-                    "The entered username already exists.",
-                    "error"
-                );
-                return true;
-            }
-
-            if ($scope.isDuplicateEmail()) {
-                showMessage(
-                    "Duplicate Email",
-                    "The entered email address already exists.",
-                    "error"
-                );
-                return true;
-            }
-
-            if ($scope.isDuplicateContactNumber()) {
-                showMessage(
-                    "Duplicate Contact Number",
-                    "The entered contact number already exists.",
-                    "error"
-                );
-                return true;
-            }
-
-            return false;
-        }
-
-
         // login
 
         $scope.loginSubmitted = false;
@@ -95,19 +9,11 @@
             $scope.loginSubmitted = true;
 
             if (loginForm.$invalid) {
-                showMessage(
-                    "Login Failed",
-                    "Please enter a valid username and password.",
-                    "error"
-                );
+                Swal.fire({ title: "Login Failed", text: "Please enter a valid username and password.", icon: "error", confirmButtonColor: "#0a4caf" });
                 return;
             }
 
-            showMessage(
-                "Login Successful",
-                "Welcome to OrgConnect!",
-                "success"
-            ).then(function () {
+            Swal.fire({ title: "Login Successful", text: "Welcome to OrgConnect!", icon: "success", confirmButtonColor: "#0a4caf" }).then(function () {
                 window.location.href = "/Main/Index";
             });
         };
@@ -131,7 +37,11 @@
         // registration data
 
         $scope.userarray = [];
-        $scope.committeeList = OrgConnectService.getCommittees();
+        $scope.committeeList = [
+            "Executive Committee", "Membership Committee", "Events Committee",
+            "Finance Committee", "Marketing Committee", "Creatives Committee",
+            "Documentation Committee"
+        ];
         $scope.positionList = [];
 
         $scope.registrationSubmitted = false;
@@ -205,8 +115,13 @@
 
         $scope.committeeChangedFunc = function () {
             $scope.position = "";
-            $scope.positionList =
-                OrgConnectService.getPositions($scope.committee);
+            if ($scope.committee === "Executive Committee") {
+                $scope.positionList = ["President", "Vice President", "Secretary", "Treasurer"];
+            } else if ($scope.committee) {
+                $scope.positionList = ["Committee Head", "Officer", "Member"];
+            } else {
+                $scope.positionList = [];
+            }
         };
 
 
@@ -215,17 +130,47 @@
         $scope.registrationFunc = function (registrationForm) {
             $scope.registrationSubmitted = true;
 
-            if (formIsInvalid(registrationForm) || hasDuplicateInformation()) {
+            if (registrationForm.$invalid) {
+                Swal.fire({ title: "Invalid Information", text: "Please correct the highlighted fields.", icon: "error", confirmButtonColor: "#0a4caf" });
                 return;
             }
 
-            $scope.userarray.push(getMemberData());
 
-            showMessage(
-                "Registration Successful",
-                "The organization member was registered.",
-                "success"
-            );
+            if ($scope.isDuplicateMemberID()) {
+                Swal.fire({ title: "Duplicate Member ID", text: "The entered Member ID already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateUsername()) {
+                Swal.fire({ title: "Duplicate Username", text: "The entered username already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateEmail()) {
+                Swal.fire({ title: "Duplicate Email", text: "The entered email address already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateContactNumber()) {
+                Swal.fire({ title: "Duplicate Contact Number", text: "The entered contact number already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+
+
+            $scope.userarray.push({
+                MemberID: $scope.memberID.toUpperCase(),
+                FName: $scope.firstName,
+                LName: $scope.lastName,
+                Username: $scope.username,
+                Email: $scope.email.trim().toLowerCase(),
+                ContactNumber: $scope.contactNumber,
+                Password: $scope.password,
+                Committee: $scope.committee,
+                Position: $scope.position
+            });
+
+            Swal.fire({ title: "Registration Successful", text: "The organization member was registered.", icon: "success", confirmButtonColor: "#0a4caf" });
 
             $scope.clearRegistrationFunc(registrationForm);
         };
@@ -248,11 +193,20 @@
             $scope.password = user.Password;
             $scope.confirmPassword = user.Password;
             $scope.committee = user.Committee;
-            $scope.positionList =
-                OrgConnectService.getPositions($scope.committee);
+            if ($scope.committee === "Executive Committee") {
+                $scope.positionList = ["President", "Vice President", "Secretary", "Treasurer"];
+            } else if ($scope.committee) {
+                $scope.positionList = ["Committee Head", "Officer", "Member"];
+            } else {
+                $scope.positionList = [];
+            }
             $scope.position = user.Position;
 
-            updateLabels();
+            setTimeout(function () {
+                if (window.M && window.M.updateTextFields) {
+                    window.M.updateTextFields();
+                }
+            }, 0);
 
             window.scrollTo({
                 top: 0,
@@ -266,17 +220,47 @@
         $scope.updateFunc = function (registrationForm) {
             $scope.registrationSubmitted = true;
 
-            if (formIsInvalid(registrationForm) || hasDuplicateInformation()) {
+            if (registrationForm.$invalid) {
+                Swal.fire({ title: "Invalid Information", text: "Please correct the highlighted fields.", icon: "error", confirmButtonColor: "#0a4caf" });
                 return;
             }
 
-            $scope.userarray[$scope.editingIndex] = getMemberData();
 
-            showMessage(
-                "Update Successful",
-                "The member information was updated.",
-                "success"
-            );
+            if ($scope.isDuplicateMemberID()) {
+                Swal.fire({ title: "Duplicate Member ID", text: "The entered Member ID already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateUsername()) {
+                Swal.fire({ title: "Duplicate Username", text: "The entered username already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateEmail()) {
+                Swal.fire({ title: "Duplicate Email", text: "The entered email address already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateContactNumber()) {
+                Swal.fire({ title: "Duplicate Contact Number", text: "The entered contact number already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+
+
+            $scope.userarray[$scope.editingIndex] = {
+                MemberID: $scope.memberID.toUpperCase(),
+                FName: $scope.firstName,
+                LName: $scope.lastName,
+                Username: $scope.username,
+                Email: $scope.email.trim().toLowerCase(),
+                ContactNumber: $scope.contactNumber,
+                Password: $scope.password,
+                Committee: $scope.committee,
+                Position: $scope.position
+            };
+
+            Swal.fire({ title: "Update Successful", text: "The member information was updated.", icon: "success", confirmButtonColor: "#0a4caf" });
 
             $scope.clearRegistrationFunc(registrationForm);
         };
@@ -310,11 +294,7 @@
                     }
                 });
 
-                showMessage(
-                    "Deleted",
-                    "The member record was removed.",
-                    "success"
-                );
+                Swal.fire({ title: "Deleted", text: "The member record was removed.", icon: "success", confirmButtonColor: "#0a4caf" });
             });
         };
 
@@ -343,11 +323,30 @@
                 registrationForm.$setUntouched();
             }
 
-            updateLabels();
+            setTimeout(function () {
+                if (window.M && window.M.updateTextFields) {
+                    window.M.updateTextFields();
+                }
+            }, 0);
         };
 
         $scope.cancelEditFunc = function (registrationForm) {
             $scope.clearRegistrationFunc(registrationForm);
+        };
+
+        $scope.databaseStatus = "Not checked";
+        $scope.databaseResult = null;
+        $scope.checkDatabaseFunc = function () {
+            $scope.databaseStatus = "Checking connection...";
+            $scope.databaseResult = null;
+            OrgConnectService.CheckDatabaseFunc().then(function (returnedData) {
+                $scope.databaseResult = returnedData.data;
+                $scope.databaseStatus = returnedData.data.Success
+                    ? "Database connected successfully."
+                    : returnedData.data.Message;
+            }, function () {
+                $scope.databaseStatus = "Database check failed. Check the connection settings and database setup.";
+            });
         };
 
     });

@@ -1,36 +1,5 @@
-﻿app.service("OrgConnectService", function() {
-
-    this.getCommittees = function() {
-        return [
-            "Executive Committee",
-            "Membership Committee",
-            "Events Committee",
-            "Finance Committee",
-            "Marketing Committee",
-            "Creatives Committee",
-            "Documentation Committee"
-        ];
+﻿app.service("OrgConnectService", function ($http) {
+    this.CheckDatabaseFunc = function () {
+        return $http.get("/Main/CheckDatabase");
     };
-
-    this.getPositions = function(committee) {
-        if (committee === "Executive Committee") {
-            return [
-                "President",
-                "Vice President",
-                "Secretary",
-                "Treasurer"
-            ];
-        }
-
-        if (committee) {
-            return [
-                "Committee Head",
-                "Officer",
-                "Member"
-            ];
-        }
-
-        return [];
-    };
-
 });
