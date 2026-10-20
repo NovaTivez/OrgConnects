@@ -12,13 +12,14 @@ namespace OrgConnect.Models.Maps
         public TblContentPagesMap()
         {
             HasKey(x => x.pageID);
+            Ignore(x => x.updatedByReference);
             ToTable("tbl_content_pages");
             Property(x => x.pageKey).HasMaxLength(50).IsRequired();
             Property(x => x.pageTitle).HasMaxLength(150).IsRequired();
             Property(x => x.pageContent).HasColumnType("text").IsRequired();
             Property(x => x.createdAt).HasColumnType("datetime");
             Property(x => x.updatedAt).HasColumnType("datetime");
-            HasRequired<TblUsersModel>(x => x.updatedByReference).WithMany().HasForeignKey(x => x.updatedBy).WillCascadeOnDelete(false);
+
         }
     }
 }

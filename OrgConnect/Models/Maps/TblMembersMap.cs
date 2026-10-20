@@ -12,6 +12,9 @@ namespace OrgConnect.Models.Maps
         public TblMembersMap()
         {
             HasKey(x => x.memberID);
+            Ignore(x => x.userIDReference);
+            Ignore(x => x.committeePositionIDReference);
+            Ignore(x => x.membershipStatusIDReference);
             ToTable("tbl_members");
             Property(x => x.memberCode).HasMaxLength(50).IsRequired();
             Property(x => x.firstName).HasMaxLength(50).IsRequired();
@@ -20,9 +23,9 @@ namespace OrgConnect.Models.Maps
             Property(x => x.contactNumber).HasMaxLength(11).IsRequired();
             Property(x => x.createdAt).HasColumnType("datetime");
             Property(x => x.updatedAt).HasColumnType("datetime");
-            HasOptional<TblUsersModel>(x => x.userIDReference).WithMany().HasForeignKey(x => x.userID).WillCascadeOnDelete(false);
-            HasRequired<TblCommitteePositionsModel>(x => x.committeePositionIDReference).WithMany().HasForeignKey(x => x.committeePositionID).WillCascadeOnDelete(false);
-            HasRequired<TblMembershipStatusModel>(x => x.membershipStatusIDReference).WithMany().HasForeignKey(x => x.membershipStatusID).WillCascadeOnDelete(false);
+
+
+
         }
     }
 }

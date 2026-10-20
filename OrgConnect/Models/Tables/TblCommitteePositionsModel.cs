@@ -10,8 +10,8 @@ namespace OrgConnect.Models.Tables
         public int committeePositionID { get; set; }
         public int committeeID { get; set; }
         public int positionID { get; set; }
-        public bool hasAdminAccess { get; set; }
-        public bool isActive { get; set; }
+        public int hasAdminAccess { get; set; }
+        public int isActive { get; set; }
         public DateTime? createdAt { get; set; }
         public DateTime? updatedAt { get; set; }
         public virtual TblCommitteesModel committeeIDReference { get; set; }

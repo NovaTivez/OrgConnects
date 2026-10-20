@@ -13,8 +13,8 @@ namespace OrgConnect.Models.Tables
         public int announcementStatusID { get; set; }
         public int createdBy { get; set; }
         public DateTime? publishedAt { get; set; }
-        public DateTime createdAt { get; set; }
-        public DateTime updatedAt { get; set; }
+        public DateTime? createdAt { get; set; }
+        public DateTime? updatedAt { get; set; }
         public virtual TblAnnouncementStatusModel announcementStatusIDReference { get; set; }
         public virtual TblUsersModel createdByReference { get; set; }
     }

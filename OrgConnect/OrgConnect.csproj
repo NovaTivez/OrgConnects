@@ -150,7 +150,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Context\OrgConnectContext.cs" />
-    <Compile Include="Models\Maps\TblActivityLogsMap.cs" />
     <Compile Include="Models\Maps\TblAnnouncementsMap.cs" />
     <Compile Include="Models\Maps\TblAnnouncementStatusMap.cs" />
     <Compile Include="Models\Maps\TblCommitteePositionsMap.cs" />
@@ -163,7 +162,6 @@
     <Compile Include="Models\Maps\TblPositionsMap.cs" />
     <Compile Include="Models\Maps\TblUsersMap.cs" />
     <Compile Include="Models\OrgConnectRequestModels.cs" />
-    <Compile Include="Models\Tables\TblAcitivityLogsModel.cs" />
     <Compile Include="Models\Tables\TblAnnouncementsModel.cs" />
     <Compile Include="Models\Tables\TblAnnouncementStatusModel.cs" />
     <Compile Include="Models\Tables\TblCommitteePositionsModel.cs" />

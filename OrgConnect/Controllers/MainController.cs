@@ -63,7 +63,6 @@ namespace OrgConnect.Controllers
                         Pages = db.tbl_content_pages.Count(),
                         Announcements = db.tbl_announcements.Count(),
                         Settings = db.tbl_organization_settings.Count(),
-                        Logs = db.tbl_activity_logs.Count(),
                         Charts = db.tbl_dashboard_charts.Count()
                     };
                     var assignments = (from a in db.tbl_committee_positions
@@ -92,7 +91,7 @@ namespace OrgConnect.Controllers
                     var options = (from a in db.tbl_committee_positions
                                    join c in db.tbl_committees on a.committeeID equals c.committeeID
                                    join p in db.tbl_positions on a.positionID equals p.positionID
-                                   where a.isActive && c.isActive && !a.hasAdminAccess
+                                   where a.isActive == 1 && c.isActive == 1 && a.hasAdminAccess == 0
                                        && c.committeeName != "Executive Committee"
                                        && p.positionName != "President" && p.positionName != "Vice President"
                                        && p.positionName != "Secretary" && p.positionName != "Treasurer"
@@ -162,7 +161,7 @@ namespace OrgConnect.Controllers
                     var assignment = (from a in db.tbl_committee_positions
                                       join c in db.tbl_committees on a.committeeID equals c.committeeID
                                       join p in db.tbl_positions on a.positionID equals p.positionID
-                                      where a.isActive && c.isActive && !a.hasAdminAccess
+                                      where a.isActive == 1 && c.isActive == 1 && a.hasAdminAccess == 0
                                           && c.committeeName != "Executive Committee"
                                           && p.positionName != "President" && p.positionName != "Vice President"
                                           && p.positionName != "Secretary" && p.positionName != "Treasurer"
@@ -188,7 +187,7 @@ namespace OrgConnect.Controllers
                         // MP3 classroom demonstration ONLY: readable password, no hashing yet.
                         // Existing approved column name is retained; this value is NOT a hash.
                         passwordHash = input.Password,
-                        isActive = true,
+                        isActive = 1,
                         createdAt = now,
                         updatedAt = now
                     };
@@ -350,7 +349,7 @@ namespace OrgConnect.Controllers
                     var assignment = (from a in db.tbl_committee_positions
                                       join c in db.tbl_committees on a.committeeID equals c.committeeID
                                       join p in db.tbl_positions on a.positionID equals p.positionID
-                                      where a.isActive && c.isActive && !a.hasAdminAccess
+                                      where a.isActive == 1 && c.isActive == 1 && a.hasAdminAccess == 0
                                           && c.committeeName != "Executive Committee"
                                           && p.positionName != "President" && p.positionName != "Vice President"
                                           && p.positionName != "Secretary" && p.positionName != "Treasurer"
@@ -420,7 +419,8 @@ namespace OrgConnect.Controllers
                     var userData = db.tbl_users.FirstOrDefault(x => x.userID == memberData.userID);
                     if (userData == null)
                         return Json(new { Success = false, Message = "The member account could not be found." });
-
+                    // Delete the dependent membership before its account.
+                    // Foreign-key restrictions remain enabled; any failure rolls back both changes.
                     db.tbl_members.Remove(memberData);
                     db.SaveChanges();
                     db.tbl_users.Remove(userData);

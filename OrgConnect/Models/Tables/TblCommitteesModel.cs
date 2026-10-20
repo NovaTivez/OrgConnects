@@ -10,7 +10,7 @@ namespace OrgConnect.Models.Tables
         public int committeeID { get; set; }
         public string committeeName { get; set; }
         public string committeeDescription { get; set; }
-        public bool isActive { get; set; }
+        public int isActive { get; set; }
         public DateTime? createdAt { get; set; }
         public DateTime? updatedAt { get; set; }
     }

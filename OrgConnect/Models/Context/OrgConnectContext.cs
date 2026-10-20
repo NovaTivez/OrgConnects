@@ -23,7 +23,6 @@ namespace OrgConnect.Models
         public DbSet<TblContentPagesModel> tbl_content_pages { get; set; }
         public DbSet<TblAnnouncementsModel> tbl_announcements { get; set; }
         public DbSet<TblOrganizationSettingsModel> tbl_organization_settings { get; set; }
-        public DbSet<TblActivityLogsModel> tbl_activity_logs { get; set; }
         public DbSet<TblDashboardChartsModel> tbl_dashboard_charts { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -38,7 +37,6 @@ namespace OrgConnect.Models
             modelBuilder.Configurations.Add(new TblContentPagesMap());
             modelBuilder.Configurations.Add(new TblAnnouncementsMap());
             modelBuilder.Configurations.Add(new TblOrganizationSettingsMap());
-            modelBuilder.Configurations.Add(new TblActivityLogsMap());
             modelBuilder.Configurations.Add(new TblDashboardChartsMap());
 
             base.OnModelCreating(modelBuilder);

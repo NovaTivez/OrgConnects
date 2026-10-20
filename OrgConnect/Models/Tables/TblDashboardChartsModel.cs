@@ -13,8 +13,8 @@ namespace OrgConnect.Models.Tables
         public string chartType { get; set; }
         public string chartSource { get; set; }
         public int displayOrder { get; set; }
-        public bool isActive { get; set; }
-        public DateTime createdAt { get; set; }
-        public DateTime updatedAt { get; set; }
+        public int isActive { get; set; }
+        public DateTime? createdAt { get; set; }
+        public DateTime? updatedAt { get; set; }
     }
 }

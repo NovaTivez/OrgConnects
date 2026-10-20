@@ -12,17 +12,18 @@ namespace OrgConnect.Models.Maps
         public TblOrganizationSettingsMap()
         {
             HasKey(x => x.settingID);
+            Ignore(x => x.updatedByReference);
             ToTable("tbl_organization_settings");
             Property(x => x.organizationName).HasMaxLength(100).IsRequired();
             Property(x => x.contactPerson).HasMaxLength(100).IsOptional();
-            Property(x => x.contactEmail).HasMaxLength(100).IsRequired();
+            Property(x => x.contactEmail).HasMaxLength(100).IsOptional();
             Property(x => x.contactNumber).HasMaxLength(20).IsOptional();
             Property(x => x.officeAddress).HasMaxLength(255).IsOptional();
             Property(x => x.officeDays).HasMaxLength(100).IsOptional();
             Property(x => x.officeHours).HasMaxLength(100).IsOptional();
             Property(x => x.createdAt).HasColumnType("datetime");
             Property(x => x.updatedAt).HasColumnType("datetime");
-            HasRequired<TblUsersModel>(x => x.updatedByReference).WithMany().HasForeignKey(x => x.updatedBy).WillCascadeOnDelete(false);
+
         }
     }
 }
