@@ -9,7 +9,7 @@ namespace OrgConnect.Models.Tables
     {
         public int announcementStatusID { get; set; }
         public string statusName { get; set; }
-        public DateTime createdAt { get; set; }
-        public DateTime updatedAt { get; set; }
+        public DateTime? createdAt { get; set; }
+        public DateTime? updatedAt { get; set; }
     }
 }

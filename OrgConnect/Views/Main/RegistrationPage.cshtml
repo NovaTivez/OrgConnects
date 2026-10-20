@@ -3,10 +3,10 @@
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
-<div class="container page-section">
+<div class="container page-section" ng-init="loadRegistrationDataFunc(); loadMembersFunc()">
     <div class="center-align">
         <h1 class="page-title">Member Registration</h1>
-        <p class="page-subtitle">Register and manage organization members.</p>
+        <p class="page-subtitle">Register a member and save their account and membership in the database.</p>
     </div>
 
     <div class="card content-card registration-card">
@@ -23,14 +23,17 @@
                     <p class="registration-helper">Complete the member's account, contact, and organization details.</p>
                 </div>
             </div>
-            <span class="edit-status" ng-show="isEditing">
-                <i class="material-icons">edit</i> Editing record
-            </span>
+
         </div>
 
+        <p class="blue-text text-darken-2" ng-show="isEditing">Editing a saved member: enter and confirm a new password to save changes. The existing password cannot be displayed.</p>
         <form name="registrationForm" class="registration-form-surface"
               ng-submit="isEditing ? updateFunc(registrationForm) : registrationFunc(registrationForm)"
               novalidate>
+            @Html.AntiForgeryToken()
+            <p class="blue-text" ng-show="optionsLoading">Loading committees and positions...</p>
+            <p class="red-text" role="alert" ng-show="optionsError">{{optionsError}}</p>
+            <button type="button" class="btn-flat" ng-show="optionsError" ng-click="loadRegistrationDataFunc()">Retry loading options</button>
 
             <div class="row registration-form-grid">
                 <div class="input-field col s12 m6 registration-input">
@@ -299,38 +302,21 @@
                 </div>
             </div>
 
-            <div class="form-button-row" ng-class="{ 'editing-actions': isEditing }">
-                <div ng-show="!isEditing">
-                    <button type="submit"
+            <div class="form-button-row">
+                <div>
+                    <button type="submit" ng-disabled="isSaving || optionsLoading || optionsError || membersLoading || deletingID !== null"
                             class="btn-large waves-effect waves-light form-button primary-form-button">
                         <i class="material-icons">person_add</i>
-                        <span>Register Member</span>
-                    </button>
-                </div>
-
-                <div ng-show="isEditing">
-                    <button type="submit"
-                            class="btn-large waves-effect waves-light form-button primary-form-button">
-                        <i class="material-icons">save</i>
-                        <span>Save Changes</span>
+                        <span>{{ isEditing ? "Save Changes" : "Register Member" }}</span>
                     </button>
                 </div>
 
                 <div>
                     <button type="button"
                             class="btn-large waves-effect registration-clear-button form-button"
-                            ng-click="clearRegistrationFunc(registrationForm)">
+                            ng-disabled="isSaving || deletingID !== null" ng-click="clearRegistrationFunc(registrationForm)">
                         <i class="material-icons">restart_alt</i>
                         <span>Clear Fields</span>
-                    </button>
-                </div>
-
-                <div ng-show="isEditing">
-                    <button type="button"
-                            class="btn-large waves-effect registration-cancel-button form-button"
-                            ng-click="cancelEditFunc(registrationForm)">
-                        <i class="material-icons">close</i>
-                        <span>Cancel Edit</span>
                     </button>
                 </div>
             </div>
@@ -339,15 +325,19 @@
 
     <div class="card content-card member-table-card">
         <div class="table-heading-row">
-            <h5 class="form-heading">Registered Members</h5>
+            <h5 class="form-heading">Saved Members — Current Session</h5>
             <span class="member-count">Total: {{userarray.length}}</span>
         </div>
 
         <div class="empty-table-message" ng-show="userarray.length === 0">
             <i class="material-icons">group_off</i>
-            <p>No members have been registered.</p>
+            <p>No registered records are available in this session.</p>
         </div>
 
+        <p class="grey-text text-darken-1">MP3 demonstration: this page reads, updates, and deletes only members registered in your current browser session. Refreshing reloads these records from MySQL. Session expiration hides them here but does not delete them. An executive directory/login is for a later stage.</p>
+        <p class="blue-text" ng-show="membersLoading">Loading saved records...</p>
+        <p class="red-text" role="alert" ng-show="membersError">{{membersError}}</p>
+        <button type="button" class="btn-flat" ng-disabled="membersLoading || isSaving || deletingID !== null" ng-click="loadMembersFunc()">Refresh saved records</button>
         <div class="responsive-table-container" ng-show="userarray.length > 0">
             <table class="highlight member-table">
                 <thead>
@@ -360,6 +350,7 @@
                         <th>Group / Committee</th>
                         <th>Role</th>
                         <th>Action</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -372,14 +363,12 @@
                         <td data-label="Group / Committee">{{user.Committee}}</td>
                         <td data-label="Role">{{user.Position}}</td>
                         <td data-label="Action" class="action-column">
-                            <button type="button"
-                                    class="btn-small waves-effect waves-light blue"
-                                    ng-click="editFunc($index)">
+                            <button type="button" class="btn-small waves-effect waves-light blue" title="Edit member"
+                                    ng-disabled="isSaving || optionsLoading || membersLoading || deletingID !== null" ng-click="editFunc($index)">
                                 <i class="material-icons">edit</i>
                             </button>
-                            <button type="button"
-                                    class="btn-small waves-effect waves-light red darken-2"
-                                    ng-click="deleteFunc($index)">
+                            <button type="button" class="btn-small waves-effect waves-light red darken-2" title="Delete member"
+                                    ng-disabled="isSaving || membersLoading || deletingID !== null" ng-click="deleteFunc($index)">
                                 <i class="material-icons">delete</i>
                             </button>
                         </td>
