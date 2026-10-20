@@ -12,6 +12,7 @@ namespace OrgConnect.Controllers
 {
     public class MainController : Controller
     {
+        private const string PendingPassword = "!PASSWORD_SETUP_PENDING!";
         public ActionResult LoginPage()
         {
             return View();
@@ -112,22 +113,18 @@ namespace OrgConnect.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult CreateMember(MemberInput input)
         {
-            // Repeat the original field rules on the server. Never trust the browser alone.
+            // Repeat the existing profile-field rules on the server. Password setup is deferred.
             if (!ModelState.IsValid || input == null || !Regex.IsMatch(input.MemberID ?? "", @"^ORG-[0-9]{4}$")
                 || !Regex.IsMatch(input.Username ?? "", @"^[A-Za-z0-9._-]{4,20}$")
                 || (input.FName ?? "").Length < 2 || (input.FName ?? "").Length > 50 || !Regex.IsMatch(input.FName ?? "", @"^[A-Za-z .'-]+$")
                 || (input.LName ?? "").Length < 2 || (input.LName ?? "").Length > 50 || !Regex.IsMatch(input.LName ?? "", @"^[A-Za-z .'-]+$")
                 || (input.Email ?? "").Trim().Length > 100 || !Regex.IsMatch((input.Email ?? "").Trim(), @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$")
                 || !Regex.IsMatch(input.ContactNumber ?? "", @"^09[0-9]{9}$")
-                || (input.Password ?? "").Length < 8 || (input.Password ?? "").Length > 32
-                || !Regex.IsMatch(input.Password ?? "", @"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]+$")
-                || input.Password != input.ConfirmPassword || string.IsNullOrEmpty(input.Committee) || string.IsNullOrEmpty(input.Position))
+                || string.IsNullOrEmpty(input.Committee) || string.IsNullOrEmpty(input.Position))
                 return Json(new { Success = false, Title = "Invalid Information", Message = "Please correct the highlighted fields." });
 
             try
             {
-                // Hash before opening a transaction, so database locks are held for less time.
-                string passwordHash = PasswordModel.Hash(input.Password);
                 string email = input.Email.Trim().ToLowerInvariant();
                 string memberCode = input.MemberID.ToUpperInvariant();
                 using (var db = new OrgConnectContext())
@@ -162,8 +159,8 @@ namespace OrgConnect.Controllers
                     {
                         username = input.Username,
                         email = email,
-                        passwordHash = passwordHash,
-                        isActive = true,
+                        passwordHash = PendingPassword,
+                        isActive = false,
                         createdAt = now,
                         updatedAt = now
                     };
@@ -188,7 +185,7 @@ namespace OrgConnect.Controllers
                     transaction.Commit();
                     GetSessionMemberIDs().Add(memberData.memberID);
 
-                    // Return only this newly submitted record, never password/hash or other members.
+                    // Return submitted profile fields only; do not return passwordHash or other members.
                     return Json(new
                     {
                         Success = true,
@@ -218,23 +215,20 @@ namespace OrgConnect.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult UpdateMember(MemberInput input)
         {
-            // Repeat the original field rules on the server. Never trust the browser alone.
+            // Repeat the existing profile-field rules on the server. Password setup is deferred.
             if (!ModelState.IsValid || input == null || !Regex.IsMatch(input.MemberID ?? "", @"^ORG-[0-9]{4}$")
                 || !Regex.IsMatch(input.Username ?? "", @"^[A-Za-z0-9._-]{4,20}$")
                 || (input.FName ?? "").Length < 2 || (input.FName ?? "").Length > 50 || !Regex.IsMatch(input.FName ?? "", @"^[A-Za-z .'-]+$")
                 || (input.LName ?? "").Length < 2 || (input.LName ?? "").Length > 50 || !Regex.IsMatch(input.LName ?? "", @"^[A-Za-z .'-]+$")
                 || (input.Email ?? "").Trim().Length > 100 || !Regex.IsMatch((input.Email ?? "").Trim(), @"^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$")
                 || !Regex.IsMatch(input.ContactNumber ?? "", @"^09[0-9]{9}$")
-                || (input.Password ?? "").Length < 8 || (input.Password ?? "").Length > 32
-                || !Regex.IsMatch(input.Password ?? "", @"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]+$")
-                || input.Password != input.ConfirmPassword || string.IsNullOrEmpty(input.Committee) || string.IsNullOrEmpty(input.Position))
+                || string.IsNullOrEmpty(input.Committee) || string.IsNullOrEmpty(input.Position))
                 return Json(new { Success = false, Title = "Invalid Information", Message = "Please correct the highlighted fields." });
 
             if (input.DatabaseID <= 0 || !GetSessionMemberIDs().Contains(input.DatabaseID))
                 return Json(new { Success = false, Title = "Access Denied", Message = "Only records registered in this browser session can be changed in the MP3 demonstration." });
             try
             {
-                string passwordHash = PasswordModel.Hash(input.Password);
                 string email = input.Email.Trim().ToLowerInvariant();
                 string memberCode = input.MemberID.ToUpperInvariant();
                 using (var db = new OrgConnectContext())
@@ -256,6 +250,8 @@ namespace OrgConnect.Controllers
                     var userData = db.tbl_users.FirstOrDefault(x => x.userID == memberData.userID.Value);
                     if (userData == null)
                         return Json(new { Success = false, Title = "Update Failed", Message = "The linked account no longer exists." });
+                    if (userData.isActive || userData.passwordHash != PendingPassword)
+                        return Json(new { Success = false, Title = "Access Denied", Message = "This demo can only edit disabled accounts awaiting password setup." });
                     if (db.tbl_members.Any(x => x.memberID != input.DatabaseID && x.memberCode.ToLower() == memberCode.ToLower()))
                         return Json(new { Success = false, Title = "Duplicate Member ID", Message = "The entered Member ID already exists." });
                     if (db.tbl_users.Any(x => x.userID != userData.userID && x.username.ToLower() == input.Username.ToLower()))
@@ -277,7 +273,6 @@ namespace OrgConnect.Controllers
                         return Json(new { Success = false, Title = "Invalid Information", Message = "Please choose an available committee and position." });
                     userData.username = input.Username;
                     userData.email = email;
-                    userData.passwordHash = passwordHash;
                     userData.updatedAt = DateTime.Now;
                     memberData.memberCode = memberCode;
                     memberData.firstName = input.FName;
@@ -338,6 +333,8 @@ namespace OrgConnect.Controllers
                         return Json(new { Success = false, Title = "Access Denied", Message = "Executive accounts cannot be deleted through the MP3 demonstration." });
                     var userData = memberData.userID.HasValue
                         ? db.tbl_users.FirstOrDefault(x => x.userID == memberData.userID.Value) : null;
+                    if (userData == null || userData.isActive || userData.passwordHash != PendingPassword)
+                        return Json(new { Success = false, Title = "Access Denied", Message = "This demo can only delete disabled accounts awaiting password setup." });
                     db.tbl_members.Remove(memberData);
                     db.SaveChanges();
                     if (userData != null)
@@ -371,7 +368,7 @@ namespace OrgConnect.Controllers
                                    join a in db.tbl_committee_positions on m.committeePositionID equals a.committeePositionID
                                    join c in db.tbl_committees on a.committeeID equals c.committeeID
                                    join p in db.tbl_positions on a.positionID equals p.positionID
-                                   where ids.Contains(m.memberID) && !a.hasAdminAccess
+                                   where ids.Contains(m.memberID) && !u.isActive && u.passwordHash == PendingPassword && !a.hasAdminAccess
                                        && c.committeeName != "Executive Committee"
                                        && p.positionName != "President" && p.positionName != "Vice President"
                                        && p.positionName != "Secretary" && p.positionName != "Treasurer"
@@ -398,8 +395,6 @@ namespace OrgConnect.Controllers
             }
         }
 
-        // A server-side list scopes this unauthenticated MP3 demo to its own new records.
-        // This is not a substitute for the future executive login/authorization.
         private List<int> GetSessionMemberIDs()
         {
             if (Session["MP3MemberIDs"] == null)
@@ -408,5 +403,4 @@ namespace OrgConnect.Controllers
         }
     }
 }
-
 

@@ -163,7 +163,6 @@
     <Compile Include="Models\Maps\TblPositionsMap.cs" />
     <Compile Include="Models\Maps\TblUsersMap.cs" />
     <Compile Include="Models\OrgConnectRequestModels.cs" />
-    <Compile Include="Models\PasswordModel.cs" />
     <Compile Include="Models\Tables\TblAcitivityLogsModel.cs" />
     <Compile Include="Models\Tables\TblAnnouncementsModel.cs" />
     <Compile Include="Models\Tables\TblAnnouncementStatusModel.cs" />

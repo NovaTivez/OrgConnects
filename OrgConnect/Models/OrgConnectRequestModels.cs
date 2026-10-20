@@ -14,8 +14,6 @@ namespace OrgConnect.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string ContactNumber { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
         public string Committee { get; set; }
         public string Position { get; set; }
     }

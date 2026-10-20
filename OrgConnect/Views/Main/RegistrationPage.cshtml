@@ -6,7 +6,7 @@
 <div class="container page-section" ng-init="loadRegistrationDataFunc(); loadMembersFunc()">
     <div class="center-align">
         <h1 class="page-title">Member Registration</h1>
-        <p class="page-subtitle">Register a member and save their account and membership in the database.</p>
+        <p class="page-subtitle">Register a member profile and save a disabled account record in the database.</p>
     </div>
 
     <div class="card content-card registration-card">
@@ -20,17 +20,18 @@
                     <h5 class="form-heading">
                         {{ isEditing ? "Update Member" : "Register New Member" }}
                     </h5>
-                    <p class="registration-helper">Complete the member's account, contact, and organization details.</p>
+                    <p class="registration-helper">Complete the member's profile, contact, and organization details.</p>
                 </div>
             </div>
 
         </div>
 
-        <p class="blue-text text-darken-2" ng-show="isEditing">Editing a saved member: enter and confirm a new password to save changes. The existing password cannot be displayed.</p>
+
         <form name="registrationForm" class="registration-form-surface"
               ng-submit="isEditing ? updateFunc(registrationForm) : registrationFunc(registrationForm)"
               novalidate>
             @Html.AntiForgeryToken()
+            <p class="blue-text text-darken-2">Password setup and login are deferred. This form saves your member details and a disabled account record; no password is collected.</p>
             <p class="blue-text" ng-show="optionsLoading">Loading committees and positions...</p>
             <p class="red-text" role="alert" ng-show="optionsError">{{optionsError}}</p>
             <button type="button" class="btn-flat" ng-show="optionsError" ng-click="loadRegistrationDataFunc()">Retry loading options</button>
@@ -209,58 +210,7 @@
                     </span>
                 </div>
 
-                <div class="input-field col s12 m6 registration-input password-input">
-                    <i class="material-icons prefix">lock</i>
-                    <input id="password"
-                           name="password"
-                           type="password"
-                           maxlength="32"
-                           ng-model="password"
-                           ng-model-options="{ allowInvalid: true }"
-                           ng-change="validatePasswordMatch(registrationForm)"
-                           ng-minlength="8"
-                           ng-maxlength="32"
-                           ng-pattern="passwordPattern"
-                           autocomplete="new-password"
-                           required />
-                    <label for="password">Password <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && registrationForm.password.$error.required">
-                        Password is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && !registrationForm.password.$error.required && (registrationForm.password.$error.minlength || registrationForm.password.$error.maxlength)">
-                        Password must contain 8–32 characters.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && !registrationForm.password.$error.required && !registrationForm.password.$error.minlength && !registrationForm.password.$error.maxlength && registrationForm.password.$error.pattern">
-                        Include uppercase, lowercase, number, and special character.
-                    </span>
-                </div>
-
-                <div class="input-field col s12 m6 registration-input password-input">
-                    <i class="material-icons prefix">lock_outline</i>
-                    <input id="confirm_password"
-                           name="confirmPassword"
-                           type="password"
-                           maxlength="32"
-                           ng-model="confirmPassword"
-                           ng-model-options="{ allowInvalid: true }"
-                           ng-change="validatePasswordMatch(registrationForm)"
-                           autocomplete="new-password"
-                           required />
-                    <label for="confirm_password">Confirm Password <span class="required-mark" aria-hidden="true">*</span></label>
-
-                    <span class="validation-message"
-                          ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) && registrationForm.confirmPassword.$error.required">
-                        Please confirm the password.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) && !registrationForm.confirmPassword.$error.required && registrationForm.confirmPassword.$error.passwordMatch">
-                        Passwords do not match.
-                    </span>
-                </div>
 
                 <div class="col s12 m6 select-field registration-select">
                     <label for="committee">Group / Committee <span class="required-mark" aria-hidden="true">*</span></label>
@@ -334,7 +284,7 @@
             <p>No registered records are available in this session.</p>
         </div>
 
-        <p class="grey-text text-darken-1">MP3 demonstration: this page reads, updates, and deletes only members registered in your current browser session. Refreshing reloads these records from MySQL. Session expiration hides them here but does not delete them. An executive directory/login is for a later stage.</p>
+        <p class="grey-text text-darken-1">MP3 demonstration: this page reads, updates, and deletes only members registered in your current browser session. Refreshing reloads these records from MySQL. Session expiration hides them here but does not delete them. Only disabled accounts awaiting password setup are managed here. An executive directory/login is for a later stage.</p>
         <p class="blue-text" ng-show="membersLoading">Loading saved records...</p>
         <p class="red-text" role="alert" ng-show="membersError">{{membersError}}</p>
         <button type="button" class="btn-flat" ng-disabled="membersLoading || isSaving || deletingID !== null" ng-click="loadMembersFunc()">Refresh saved records</button>

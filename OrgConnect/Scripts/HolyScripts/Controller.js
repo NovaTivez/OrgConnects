@@ -13,7 +13,7 @@
                 return;
             }
 
-            Swal.fire({ title: "Login Not Connected Yet", text: "This MP3 update connects registration to the database. Account login will be implemented in a later stage.", icon: "info", confirmButtonColor: "#0a4caf" });
+            Swal.fire({ title: "Login Not Connected Yet", text: "Password setup and account login are deferred. This MP3 version saves member profiles and disabled account records only.", icon: "info", confirmButtonColor: "#0a4caf" });
         };
 
         $scope.clearLoginFunc = function (loginForm) {
@@ -78,23 +78,6 @@
 
 
         $scope.emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
-
-        $scope.passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
-
-        $scope.validatePasswordMatch = function (registrationForm) {
-            if (!registrationForm || !registrationForm.confirmPassword) {
-                return;
-            }
-
-            var passwordsMatch = !$scope.confirmPassword ||
-                $scope.password === $scope.confirmPassword;
-
-            registrationForm.confirmPassword.$setValidity(
-                "passwordMatch",
-                passwordsMatch
-            );
-        };
-
 
         // duplicate checks
 
@@ -195,8 +178,7 @@
                 Username: $scope.username,
                 Email: $scope.email.trim().toLowerCase(),
                 ContactNumber: $scope.contactNumber,
-                Password: $scope.password,
-                ConfirmPassword: $scope.confirmPassword,
+
                 Committee: $scope.committee,
                 Position: $scope.position
             };
@@ -247,9 +229,8 @@
             $scope.username = user.Username;
             $scope.email = user.Email;
             $scope.contactNumber = user.ContactNumber;
-            // A stored Argon2id hash cannot be converted back to the old password.
-            $scope.password = "";
-            $scope.confirmPassword = "";
+
+
             $scope.committee = user.Committee;
             $scope.committeeChangedFunc();
             $scope.position = $scope.positionList.indexOf(user.Position) >= 0 ? user.Position : "";
@@ -304,8 +285,7 @@
                 Username: $scope.username,
                 Email: $scope.email.trim().toLowerCase(),
                 ContactNumber: $scope.contactNumber,
-                Password: $scope.password,
-                ConfirmPassword: $scope.confirmPassword,
+
                 Committee: $scope.committee,
                 Position: $scope.position
             };
@@ -383,8 +363,8 @@
             $scope.username = "";
             $scope.email = "";
             $scope.contactNumber = "";
-            $scope.password = "";
-            $scope.confirmPassword = "";
+
+
             $scope.committee = "";
             $scope.position = "";
             $scope.positionList = [];
