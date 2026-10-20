@@ -7,6 +7,7 @@ namespace OrgConnect.Models
 {
     public class MemberInput
     {
+        public int DatabaseID { get; set; }
         public string MemberID { get; set; }
         public string FName { get; set; }
         public string LName { get; set; }

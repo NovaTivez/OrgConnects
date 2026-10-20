@@ -19,18 +19,20 @@
                 <div>
                     <span class="registration-step">MEMBER INFORMATION</span>
                     <h5 class="form-heading">
-                        Register New Member
+                        {{ isEditing ? "Update Member in Table" : "Register New Member" }}
                     </h5>
                     <p class="registration-helper">Complete the member's account, contact, and organization details.</p>
                 </div>
             </div>
-            
+
         </div>
 
         <form name="registrationForm" class="registration-form-surface"
-              ng-submit="registrationFunc(registrationForm)"
+              ng-submit="isEditing ? updateFunc(registrationForm) : registrationFunc(registrationForm)"
               novalidate>
             @Html.AntiForgeryToken()
+            <p class="blue-text text-darken-2" role="status" ng-show="isEditing">Editing a registered member. Save Changes will update the database.</p>
+            <p class="red-text" role="alert" ng-show="serverErrors.form">{{serverErrors.form}}</p>
             <p class="grey-text text-darken-1">Classroom demonstration: use sample details and a dummy password. Account login is not implemented yet.</p>
             <p class="blue-text" ng-show="optionsLoading">Loading committees and positions...</p>
             <p class="red-text" role="alert" ng-show="optionsError">{{optionsError}}</p>
@@ -41,11 +43,12 @@
                     <i class="material-icons prefix">badge</i>
                     <input id="member_id"
                            name="memberID"
+                           ng-class="{ 'invalid': serverErrors.memberID }"
                            type="text"
                            maxlength="8"
                            ng-model="memberID"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-change="memberID = (memberID || '').toUpperCase()"
+                           ng-change="memberID = (memberID || '').toUpperCase(); serverErrors.memberID = null"
                            ng-pattern="/^ORG-\d{4}$/"
                            ng-maxlength="8"
                            required />
@@ -63,12 +66,15 @@
                           ng-show="registrationSubmitted && memberID && registrationForm.memberID.$valid && isDuplicateMemberID()">
                         Member ID already exists.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.memberID">{{serverErrors.memberID}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">account_circle</i>
                     <input id="username"
                            name="username"
+                           ng-class="{ 'invalid': serverErrors.username }"
+                           ng-change="serverErrors.username = null"
                            type="text"
                            maxlength="20"
                            ng-model="username"
@@ -95,12 +101,15 @@
                           ng-show="registrationSubmitted && username && registrationForm.username.$valid && isDuplicateUsername()">
                         Username already exists.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.username">{{serverErrors.username}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">person</i>
                     <input id="first_name"
                            name="firstName"
+                           ng-class="{ 'invalid': serverErrors.firstName }"
+                           ng-change="serverErrors.firstName = null"
                            type="text"
                            maxlength="50"
                            ng-model="firstName"
@@ -123,12 +132,15 @@
                           ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && registrationForm.firstName.$error.pattern">
                         Use letters, spaces, apostrophes, periods, and hyphens only.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.firstName">{{serverErrors.firstName}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">person</i>
                     <input id="last_name"
                            name="lastName"
+                           ng-class="{ 'invalid': serverErrors.lastName }"
+                           ng-change="serverErrors.lastName = null"
                            type="text"
                            maxlength="50"
                            ng-model="lastName"
@@ -151,12 +163,15 @@
                           ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && registrationForm.lastName.$error.pattern">
                         Use letters, spaces, apostrophes, periods, and hyphens only.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.lastName">{{serverErrors.lastName}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">email</i>
                     <input id="email"
                            name="email"
+                           ng-class="{ 'invalid': serverErrors.email }"
+                           ng-change="serverErrors.email = null"
                            type="email"
                            maxlength="100"
                            ng-model="email"
@@ -179,18 +194,20 @@
                           ng-show="registrationSubmitted && email && registrationForm.email.$valid && isDuplicateEmail()">
                         Email address already exists.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.email">{{serverErrors.email}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">phone</i>
                     <input id="contact_number"
                            name="contactNumber"
+                           ng-class="{ 'invalid': serverErrors.contactNumber }"
                            type="tel"
                            inputmode="numeric"
                            maxlength="11"
                            ng-model="contactNumber"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-change="numbersOnlyFunc()"
+                           ng-change="numbersOnlyFunc(); serverErrors.contactNumber = null"
                            ng-pattern="/^09\d{9}$/"
                            ng-maxlength="11"
                            required />
@@ -208,17 +225,19 @@
                           ng-show="registrationSubmitted && contactNumber && registrationForm.contactNumber.$valid && isDuplicateContactNumber()">
                         Contact number already exists.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.contactNumber">{{serverErrors.contactNumber}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input password-input">
                     <i class="material-icons prefix">lock</i>
                     <input id="password"
                            name="password"
+                           ng-class="{ 'invalid': serverErrors.password }"
                            type="password"
                            maxlength="32"
                            ng-model="password"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-change="validatePasswordMatch(registrationForm)"
+                           ng-change="validatePasswordMatch(registrationForm); serverErrors.password = null; serverErrors.confirmPassword = null"
                            ng-minlength="8"
                            ng-maxlength="32"
                            ng-pattern="passwordPattern"
@@ -238,17 +257,19 @@
                           ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && !registrationForm.password.$error.required && !registrationForm.password.$error.minlength && !registrationForm.password.$error.maxlength && registrationForm.password.$error.pattern">
                         Include uppercase, lowercase, number, and special character.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.password">{{serverErrors.password}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input password-input">
                     <i class="material-icons prefix">lock_outline</i>
                     <input id="confirm_password"
                            name="confirmPassword"
+                           ng-class="{ 'invalid': serverErrors.confirmPassword }"
                            type="password"
                            maxlength="32"
                            ng-model="confirmPassword"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-change="validatePasswordMatch(registrationForm)"
+                           ng-change="validatePasswordMatch(registrationForm); serverErrors.confirmPassword = null"
                            autocomplete="new-password"
                            required />
                     <label for="confirm_password">Confirm Password <span class="required-mark" aria-hidden="true">*</span></label>
@@ -261,15 +282,17 @@
                           ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) && !registrationForm.confirmPassword.$error.required && registrationForm.confirmPassword.$error.passwordMatch">
                         Passwords do not match.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.confirmPassword">{{serverErrors.confirmPassword}}</span>
                 </div>
 
                 <div class="col s12 m6 select-field registration-select">
                     <label for="committee">Group / Committee <span class="required-mark" aria-hidden="true">*</span></label>
                     <select id="committee"
                             name="committee"
+                            ng-class="{ 'invalid': serverErrors.committee }"
                             class="browser-default"
                             ng-model="committee"
-                            ng-change="committeeChangedFunc()"
+                            ng-change="committeeChangedFunc(); serverErrors.committee = null"
                             required>
                         <option value="">Select a group or committee</option>
                         <option ng-repeat="item in committeeList" value="{{item}}">
@@ -281,12 +304,15 @@
                           ng-show="(registrationForm.committee.$dirty || registrationForm.committee.$touched || registrationSubmitted) && registrationForm.committee.$error.required">
                         Group or committee is required.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.committee">{{serverErrors.committee}}</span>
                 </div>
 
                 <div class="col s12 m6 select-field registration-select">
                     <label for="position">Role <span class="required-mark" aria-hidden="true">*</span></label>
                     <select id="position"
                             name="position"
+                            ng-class="{ 'invalid': serverErrors.position }"
+                            ng-change="serverErrors.position = null"
                             class="browser-default"
                             ng-model="position"
                             required>
@@ -300,24 +326,25 @@
                           ng-show="(registrationForm.position.$dirty || registrationForm.position.$touched || registrationSubmitted) && registrationForm.position.$error.required">
                         Role is required.
                     </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.position">{{serverErrors.position}}</span>
                 </div>
             </div>
 
             <div class="form-button-row">
                 <div>
-                    <button type="submit" ng-disabled="isSaving || optionsLoading || optionsError"
+                    <button type="submit" ng-disabled="isSaving || isDeleting || optionsLoading || optionsError"
                             class="btn-large waves-effect waves-light form-button primary-form-button">
-                        <i class="material-icons">person_add</i>
-                        <span>Register Member</span>
+                        <i class="material-icons">{{isEditing ? "save" : "person_add"}}</i>
+                        <span>{{isEditing ? "Save Changes" : "Register Member"}}</span>
                     </button>
                 </div>
 
                 <div>
                     <button type="button"
                             class="btn-large waves-effect registration-clear-button form-button"
-                            ng-click="clearRegistrationFunc(registrationForm)">
+                            ng-disabled="isSaving || isDeleting" ng-click="clearRegistrationFunc(registrationForm)">
                         <i class="material-icons">restart_alt</i>
-                        <span>Clear Fields</span>
+                        <span>{{isEditing ? "Cancel Edit" : "Clear Fields"}}</span>
                     </button>
                 </div>
             </div>
@@ -326,7 +353,7 @@
 
     <div class="card content-card member-table-card">
         <div class="table-heading-row">
-            <h5 class="form-heading">Saved During This Visit</h5>
+            <h5 class="form-heading">Registration Table — This Visit</h5>
             <span class="member-count">Total: {{userarray.length}}</span>
         </div>
 
@@ -335,7 +362,7 @@
             <p>No registrations have been saved during this visit.</p>
         </div>
 
-        <p class="grey-text text-darken-1">This list shows successful registrations made during this page visit. Refreshing clears this display, but saved records remain in MySQL. Check HeidiSQL to verify them. Editing, deletion, and account login are for a later stage.</p>
+        <p class="grey-text text-darken-1">Register, Save Changes, and Delete save changes to MySQL. This table shows members registered during this visit; refreshing clears the display but does not undo saved changes. Only records created in the current session can be changed. Account login is for a later stage.</p>
         <div class="responsive-table-container" ng-show="userarray.length > 0">
             <table class="highlight member-table">
                 <thead>
@@ -347,7 +374,8 @@
                         <th>Contact Number</th>
                         <th>Group / Committee</th>
                         <th>Role</th>
-                        
+                        <th>Actions</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -359,6 +387,16 @@
                         <td data-label="Contact Number">{{user.ContactNumber}}</td>
                         <td data-label="Group / Committee">{{user.Committee}}</td>
                         <td data-label="Role">{{user.Position}}</td>
+                        <td data-label="Actions" class="action-column">
+                            <button type="button" class="btn-small waves-effect waves-light blue" title="Edit member" aria-label="Edit member"
+                                    ng-disabled="isSaving || isDeleting || optionsLoading" ng-click="editFunc($index, registrationForm)">
+                                <i class="material-icons" aria-hidden="true">edit</i>
+                            </button>
+                            <button type="button" class="btn-small waves-effect waves-light red darken-2" title="Delete from database" aria-label="Delete member from database"
+                                    ng-disabled="isSaving || isDeleting" ng-click="deleteFunc($index)">
+                                <i class="material-icons" aria-hidden="true">delete</i>
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>

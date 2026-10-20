@@ -35,6 +35,9 @@
         // registration data
 
         $scope.userarray = [];
+        $scope.isEditing = false;
+        $scope.editingIndex = -1;
+        $scope.isDeleting = false;
         $scope.committeeList = [];
         $scope.positionList = [];
         $scope.registrationOptions = [];
@@ -69,6 +72,7 @@
         };
 
         $scope.registrationSubmitted = false;
+        $scope.serverErrors = {};
 
 
         $scope.emailPattern = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
@@ -95,32 +99,32 @@
         $scope.isDuplicateMemberID = function () {
             var enteredID = ($scope.memberID || "").toLowerCase();
 
-            return $scope.userarray.some(function (user) {
-                return user.MemberID.toLowerCase() === enteredID;
+            return $scope.userarray.some(function (user, index) {
+                return index !== $scope.editingIndex && user.MemberID.toLowerCase() === enteredID;
             });
         };
 
         $scope.isDuplicateUsername = function () {
             var enteredUsername = ($scope.username || "").toLowerCase();
 
-            return $scope.userarray.some(function (user) {
-                return (user.Username || "").toLowerCase() === enteredUsername;
+            return $scope.userarray.some(function (user, index) {
+                return index !== $scope.editingIndex && (user.Username || "").toLowerCase() === enteredUsername;
             });
         };
 
         $scope.isDuplicateEmail = function () {
             var enteredEmail = ($scope.email || "").trim().toLowerCase();
 
-            return $scope.userarray.some(function (user) {
-                return (user.Email || "").trim().toLowerCase() === enteredEmail;
+            return $scope.userarray.some(function (user, index) {
+                return index !== $scope.editingIndex && (user.Email || "").trim().toLowerCase() === enteredEmail;
             });
         };
 
         $scope.isDuplicateContactNumber = function () {
             var enteredNumber = $scope.contactNumber || "";
 
-            return $scope.userarray.some(function (user) {
-                return user.ContactNumber === enteredNumber;
+            return $scope.userarray.some(function (user, index) {
+                return index !== $scope.editingIndex && user.ContactNumber === enteredNumber;
             });
         };
 
@@ -145,9 +149,19 @@
 
         $scope.registrationFunc = function (registrationForm) {
             $scope.registrationSubmitted = true;
+            $scope.serverErrors = {};
 
             if (registrationForm.$invalid) {
-                Swal.fire({ title: "Invalid Information", text: "Please correct the highlighted fields.", icon: "error", confirmButtonColor: "#0a4caf" });
+                var labels = { memberID: "Member ID", username: "Username", firstName: "First Name", lastName: "Last Name", email: "Email", contactNumber: "Contact Number", password: "Password", confirmPassword: "Confirm Password", committee: "Group / Committee", position: "Role" };
+                var invalidFields = [];
+                angular.forEach(registrationForm.$error, function (controls) {
+                    angular.forEach(controls, function (control) {
+                        if (control.$setTouched) { control.$setTouched(); }
+                        var label = labels[control.$name] || control.$name;
+                        if (label && invalidFields.indexOf(label) === -1) { invalidFields.push(label); }
+                    });
+                });
+                Swal.fire({ title: "Invalid Information", text: "Please correct the highlighted fields." + (invalidFields.length ? "\nFields: " + invalidFields.join(", ") : ""), icon: "error", confirmButtonColor: "#0a4caf" });
                 return;
             }
 
@@ -172,7 +186,7 @@
                 return;
             }
 
-            if ($scope.isSaving) {
+            if ($scope.isSaving || $scope.isDeleting) {
                 return;
             }
             $scope.isSaving = true;
@@ -192,10 +206,14 @@
                 $scope.isSaving = false;
                 var result = returnedData.data;
                 if (!result.Success) {
+                    $scope.serverErrors = result.FieldErrors || {};
                     Swal.fire({ title: result.Title || "Registration Failed", text: result.Message, icon: "error", confirmButtonColor: "#0a4caf" });
                     return;
                 }
-                $scope.userarray.push(result.Member);
+                // Keep the entered classroom-demo password in this page's memory for editing.
+                // It is not returned by the server or shown in the table.
+                var displayMember = angular.extend({}, result.Member, { Password: userData.Password });
+                $scope.userarray.push(displayMember);
                 Swal.fire({ title: "Registration Successful", text: "The organization member was registered.", icon: "success", confirmButtonColor: "#0a4caf" });
                 $scope.clearRegistrationFunc(registrationForm);
             }, function () {
@@ -204,9 +222,164 @@
             });
         };
 
+        // Edit the form, then submit changes through the service and C# controller.
+        $scope.editFunc = function (userindex, registrationForm) {
+            if ($scope.isSaving || $scope.isDeleting || !$scope.userarray[userindex]) {
+                return;
+            }
+            var user = $scope.userarray[userindex];
+            $scope.isEditing = true;
+            $scope.editingIndex = userindex;
+            $scope.registrationSubmitted = false;
+            $scope.serverErrors = {};
+            $scope.memberID = user.MemberID;
+            $scope.firstName = user.FName;
+            $scope.lastName = user.LName;
+            $scope.username = user.Username;
+            $scope.email = user.Email;
+            $scope.contactNumber = user.ContactNumber;
+            $scope.password = user.Password;
+            $scope.confirmPassword = user.Password;
+            $scope.committee = user.Committee;
+            $scope.committeeChangedFunc();
+            $scope.position = $scope.positionList.indexOf(user.Position) >= 0 ? user.Position : "";
+            $scope.validatePasswordMatch(registrationForm);
+            if (registrationForm) {
+                registrationForm.$setPristine();
+                registrationForm.$setUntouched();
+            }
+            setTimeout(function () {
+                if (window.M && window.M.updateTextFields) {
+                    window.M.updateTextFields();
+                }
+            }, 0);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        $scope.updateFunc = function (registrationForm) {
+            $scope.registrationSubmitted = true;
+            $scope.serverErrors = {};
+
+            if (registrationForm.$invalid) {
+                var labels = { memberID: "Member ID", username: "Username", firstName: "First Name", lastName: "Last Name", email: "Email", contactNumber: "Contact Number", password: "Password", confirmPassword: "Confirm Password", committee: "Group / Committee", position: "Role" };
+                var invalidFields = [];
+                angular.forEach(registrationForm.$error, function (controls) {
+                    angular.forEach(controls, function (control) {
+                        if (control.$setTouched) { control.$setTouched(); }
+                        var label = labels[control.$name] || control.$name;
+                        if (label && invalidFields.indexOf(label) === -1) { invalidFields.push(label); }
+                    });
+                });
+                Swal.fire({ title: "Invalid Information", text: "Please correct the highlighted fields." + (invalidFields.length ? "\nFields: " + invalidFields.join(", ") : ""), icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+
+            if ($scope.isDuplicateMemberID()) {
+                Swal.fire({ title: "Duplicate Member ID", text: "The entered Member ID already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateUsername()) {
+                Swal.fire({ title: "Duplicate Username", text: "The entered username already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateEmail()) {
+                Swal.fire({ title: "Duplicate Email", text: "The entered email address already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isDuplicateContactNumber()) {
+                Swal.fire({ title: "Duplicate Contact Number", text: "The entered contact number already exists.", icon: "error", confirmButtonColor: "#0a4caf" });
+                return;
+            }
+
+            if ($scope.isSaving || $scope.isDeleting || !$scope.isEditing || !$scope.userarray[$scope.editingIndex]) {
+                return;
+            }
+            var originalRow = $scope.userarray[$scope.editingIndex];
+            $scope.isSaving = true;
+            var userData = {
+                DatabaseID: originalRow.DatabaseID,
+                MemberID: $scope.memberID.toUpperCase(),
+                FName: $scope.firstName,
+                LName: $scope.lastName,
+                Username: $scope.username,
+                Email: $scope.email.trim().toLowerCase(),
+                ContactNumber: $scope.contactNumber,
+                Password: $scope.password,
+                ConfirmPassword: $scope.confirmPassword,
+                Committee: $scope.committee,
+                Position: $scope.position
+            };
+            OrgConnectService.UpdateMemberFunc(userData).then(function (returnedData) {
+                $scope.isSaving = false;
+                var result = returnedData.data;
+                if (!result.Success) {
+                    $scope.serverErrors = result.FieldErrors || {};
+                    Swal.fire({ title: result.Title || "Update Failed", text: result.Message, icon: "error", confirmButtonColor: "#0a4caf" });
+                    return;
+                }
+                $scope.userarray[$scope.editingIndex] = angular.extend({}, result.Member, { Password: userData.Password });
+                $scope.clearRegistrationFunc(registrationForm);
+                Swal.fire({ title: "Update Successful", text: "The member information was updated in the database.", icon: "success", confirmButtonColor: "#0a4caf" });
+            }, function () {
+                $scope.isSaving = false;
+                Swal.fire({ title: "Update Failed", text: "The request failed. Check the database connection before trying again.", icon: "error", confirmButtonColor: "#0a4caf" });
+            });
+        };
+
+        $scope.deleteFunc = function (userindex) {
+            if ($scope.isSaving || $scope.isDeleting || !$scope.userarray[userindex]) {
+                return;
+            }
+            var user = $scope.userarray[userindex];
+            $scope.isDeleting = true;
+            Swal.fire({
+                title: "Delete Member?",
+                text: "Remove " + user.FName + " " + user.LName + " and their account from the database? This cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#c62828",
+                cancelButtonColor: "#616161",
+                confirmButtonText: "Yes, delete member"
+            }).then(function (result) {
+                $scope.$applyAsync(function () {
+                    if (!result.isConfirmed) {
+                        $scope.isDeleting = false;
+                        return;
+                    }
+                    OrgConnectService.RemoveMemberFunc(user.DatabaseID).then(function (returnedData) {
+                        $scope.isDeleting = false;
+                        if (!returnedData.data.Success) {
+                            Swal.fire({ title: "Delete Failed", text: returnedData.data.Message, icon: "error", confirmButtonColor: "#0a4caf" });
+                            return;
+                        }
+                        var currentIndex = $scope.userarray.indexOf(user);
+                        if (currentIndex >= 0) {
+                            $scope.userarray.splice(currentIndex, 1);
+                            if ($scope.editingIndex === currentIndex) {
+                                $scope.clearRegistrationFunc();
+                            } else if (currentIndex < $scope.editingIndex) {
+                                $scope.editingIndex--;
+                            }
+                        }
+                        Swal.fire({ title: "Delete Successful", text: "The member and account were deleted from the database.", icon: "success", confirmButtonColor: "#0a4caf" });
+                    }, function () {
+                        $scope.isDeleting = false;
+                        Swal.fire({ title: "Delete Failed", text: "The request failed. Check the database connection before trying again.", icon: "error", confirmButtonColor: "#0a4caf" });
+                    });
+                });
+            });
+        };
+
         // clear registration form
 
         $scope.clearRegistrationFunc = function (registrationForm) {
+            $scope.isEditing = false;
+            $scope.editingIndex = -1;
+            $scope.serverErrors = {};
             $scope.memberID = "";
             $scope.firstName = "";
             $scope.lastName = "";
@@ -222,6 +395,7 @@
             $scope.registrationSubmitted = false;
 
             if (registrationForm) {
+                $scope.validatePasswordMatch(registrationForm);
                 registrationForm.$setPristine();
                 registrationForm.$setUntouched();
             }
