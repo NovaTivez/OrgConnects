@@ -71,6 +71,27 @@
             });
         };
 
+        $scope.membersLoading = false;
+        $scope.membersError = "";
+        $scope.loadMembersFunc = function () {
+            if ($scope.isSaving || $scope.isDeleting || $scope.membersLoading) { return; }
+            $scope.membersLoading = true;
+            $scope.membersError = "";
+            var getData = OrgConnectService.GetMembersFunc();
+            getData.then(function (returnedData) {
+                $scope.membersLoading = false;
+                if (!returnedData.data.Success) {
+                    $scope.membersError = returnedData.data.Message;
+                    return;
+                }
+                $scope.userarray = returnedData.data.Members;
+                $scope.clearRegistrationFunc();
+            }, function () {
+                $scope.membersLoading = false;
+                $scope.membersError = "Could not load saved members. Check the database connection and retry.";
+            });
+        };
+
         $scope.registrationSubmitted = false;
         $scope.serverErrors = {};
 
@@ -210,10 +231,7 @@
                     Swal.fire({ title: result.Title || "Registration Failed", text: result.Message, icon: "error", confirmButtonColor: "#0a4caf" });
                     return;
                 }
-                // Keep the entered classroom-demo password in this page's memory for editing.
-                // It is not returned by the server or shown in the table.
-                var displayMember = angular.extend({}, result.Member, { Password: userData.Password });
-                $scope.userarray.push(displayMember);
+                $scope.userarray = result.Members;
                 Swal.fire({ title: "Registration Successful", text: "The organization member was registered.", icon: "success", confirmButtonColor: "#0a4caf" });
                 $scope.clearRegistrationFunc(registrationForm);
             }, function () {
@@ -238,8 +256,8 @@
             $scope.username = user.Username;
             $scope.email = user.Email;
             $scope.contactNumber = user.ContactNumber;
-            $scope.password = user.Password;
-            $scope.confirmPassword = user.Password;
+            $scope.password = "";
+            $scope.confirmPassword = "";
             $scope.committee = user.Committee;
             $scope.committeeChangedFunc();
             $scope.position = $scope.positionList.indexOf(user.Position) >= 0 ? user.Position : "";
@@ -321,7 +339,7 @@
                     Swal.fire({ title: result.Title || "Update Failed", text: result.Message, icon: "error", confirmButtonColor: "#0a4caf" });
                     return;
                 }
-                $scope.userarray[$scope.editingIndex] = angular.extend({}, result.Member, { Password: userData.Password });
+                $scope.userarray = result.Members;
                 $scope.clearRegistrationFunc(registrationForm);
                 Swal.fire({ title: "Update Successful", text: "The member information was updated in the database.", icon: "success", confirmButtonColor: "#0a4caf" });
             }, function () {
@@ -356,15 +374,8 @@
                             Swal.fire({ title: "Delete Failed", text: returnedData.data.Message, icon: "error", confirmButtonColor: "#0a4caf" });
                             return;
                         }
-                        var currentIndex = $scope.userarray.indexOf(user);
-                        if (currentIndex >= 0) {
-                            $scope.userarray.splice(currentIndex, 1);
-                            if ($scope.editingIndex === currentIndex) {
-                                $scope.clearRegistrationFunc();
-                            } else if (currentIndex < $scope.editingIndex) {
-                                $scope.editingIndex--;
-                            }
-                        }
+                        $scope.userarray = returnedData.data.Members;
+                        $scope.clearRegistrationFunc();
                         Swal.fire({ title: "Delete Successful", text: "The member and account were deleted from the database.", icon: "success", confirmButtonColor: "#0a4caf" });
                     }, function () {
                         $scope.isDeleting = false;

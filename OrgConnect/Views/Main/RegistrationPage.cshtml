@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
-<div class="container page-section" ng-init="loadRegistrationDataFunc()">
+<div class="container page-section" ng-init="loadRegistrationDataFunc(); loadMembersFunc()">
     <div class="center-align">
         <h1 class="page-title">Member Registration</h1>
         <p class="page-subtitle">Register a member and save their account and membership in the database.</p>
@@ -357,6 +357,10 @@
             <span class="member-count">Total: {{userarray.length}}</span>
         </div>
 
+        <p class="grey-text">Only members registered in this browser session are shown. When editing, enter and confirm a valid password.</p>
+        <p ng-show="membersLoading">Loading saved members...</p>
+        <p class="red-text" role="alert" ng-show="membersError">{{membersError}}</p>
+        <button type="button" class="btn-flat" ng-show="membersError" ng-disabled="membersLoading || isSaving || isDeleting" ng-click="loadMembersFunc()">Retry loading members</button>
         <div class="empty-table-message" ng-show="userarray.length === 0">
             <i class="material-icons">group_off</i>
             <p>No registrations have been saved during this visit.</p>

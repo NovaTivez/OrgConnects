@@ -1,4 +1,8 @@
 ﻿app.service("OrgConnectService", function ($http, $httpParamSerializerJQLike) {
+    this.GetMembersFunc = function () {
+        return $http.get("/Main/GetMembers");
+    };
+
     this.CheckDatabaseFunc = function () {
         return $http.get("/Main/CheckDatabase");
     };

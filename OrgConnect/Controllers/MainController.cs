@@ -219,6 +219,7 @@ namespace OrgConnect.Controllers
                     return Json(new
                     {
                         Success = true,
+                        Members = GetMemberData(),
                         Member = new
                         {
                             DatabaseID = memberData.memberID,
@@ -240,6 +241,52 @@ namespace OrgConnect.Controllers
                 return Json(new { Success = false, Title = "Registration Failed", Message = "The member could not be saved. Check the database connection and setup, then try again." });
             }
         }
+        // Like the professor's GetEmployeeData: read the saved rows after each change.
+        // Keep the existing session ownership rule; never return passwords.
+        private List<MemberInput> GetMemberData()
+        {
+            var editableMembers = Session["EditableMemberIDs"] as List<int> ?? new List<int>();
+            using (var db = new OrgConnectContext())
+            {
+                var members = (from m in db.tbl_members
+                               join u in db.tbl_users on m.userID equals u.userID
+                               join a in db.tbl_committee_positions on m.committeePositionID equals a.committeePositionID
+                               join c in db.tbl_committees on a.committeeID equals c.committeeID
+                               join p in db.tbl_positions on a.positionID equals p.positionID
+                               where editableMembers.Contains(m.memberID)
+                               orderby m.memberID
+                               select new MemberInput
+                               {
+                                   DatabaseID = m.memberID,
+                                   MemberID = m.memberCode,
+                                   FName = m.firstName,
+                                   LName = m.lastName,
+                                   Username = u.username,
+                                   Email = u.email,
+                                   ContactNumber = m.contactNumber,
+                                   Committee = c.committeeName,
+                                   Position = p.positionName
+                               }).ToList();
+                return members;
+            }
+        }
+
+        [HttpGet]
+        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
+        public JsonResult GetMembers()
+        {
+            try
+            {
+                var allData = GetMemberData();
+                return Json(new { Success = true, Members = allData }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError(ex.ToString());
+                return Json(new { Success = false, Message = "Could not load the saved members. Check the database connection." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult UpdateMember(MemberInput input)
@@ -333,6 +380,7 @@ namespace OrgConnect.Controllers
                     return Json(new
                     {
                         Success = true,
+                        Members = GetMemberData(),
                         Member = new
                         {
                             DatabaseID = memberData.memberID,
@@ -372,8 +420,7 @@ namespace OrgConnect.Controllers
                     var userData = db.tbl_users.FirstOrDefault(x => x.userID == memberData.userID);
                     if (userData == null)
                         return Json(new { Success = false, Message = "The member account could not be found." });
-                    // Delete the dependent membership before its account.
-                    // Foreign-key restrictions remain enabled; any failure rolls back both changes.
+
                     db.tbl_members.Remove(memberData);
                     db.SaveChanges();
                     db.tbl_users.Remove(userData);
@@ -381,7 +428,7 @@ namespace OrgConnect.Controllers
                     transaction.Commit();
                     editableMembers.Remove(memberID);
                     Session["EditableMemberIDs"] = editableMembers;
-                    return Json(new { Success = true });
+                    return Json(new { Success = true, Members = GetMemberData() });
                 }
             }
             catch (Exception ex)
