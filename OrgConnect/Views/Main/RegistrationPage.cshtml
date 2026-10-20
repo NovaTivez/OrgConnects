@@ -33,12 +33,93 @@
             @Html.AntiForgeryToken()
             <p class="blue-text text-darken-2" role="status" ng-show="isEditing">Editing a registered member. Save Changes will update the database.</p>
             <p class="red-text" role="alert" ng-show="serverErrors.form">{{serverErrors.form}}</p>
-            <p class="grey-text text-darken-1">Classroom demonstration: use sample details and a dummy password. Account login is not implemented yet.</p>
             <p class="blue-text" ng-show="optionsLoading">Loading committees and positions...</p>
             <p class="red-text" role="alert" ng-show="optionsError">{{optionsError}}</p>
             <button type="button" class="btn-flat" ng-show="optionsError" ng-click="loadRegistrationDataFunc()">Retry loading options</button>
 
             <div class="row registration-form-grid">
+                <div class="input-field col s12 m4 registration-input registration-name-input">
+                    <i class="material-icons prefix">person</i>
+                    <input id="first_name"
+                           name="firstName"
+                           ng-class="{ 'invalid': serverErrors.firstName }"
+                           ng-change="serverErrors.firstName = null"
+                           type="text"
+                           maxlength="50"
+                           ng-model="firstName"
+                           ng-model-options="{ allowInvalid: true }"
+                           ng-minlength="2"
+                           ng-maxlength="50"
+                           ng-pattern="/^[A-Za-z .'-]+$/"
+                           required />
+                    <label for="first_name">First Name <span class="required-mark" aria-hidden="true">*</span></label>
+
+                    <span class="validation-message"
+                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && registrationForm.firstName.$error.required">
+                        First name is required.
+                    </span>
+                    <span class="validation-message"
+                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && (registrationForm.firstName.$error.minlength || registrationForm.firstName.$error.maxlength)">
+                        First name must contain 2–50 characters.
+                    </span>
+                    <span class="validation-message"
+                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && registrationForm.firstName.$error.pattern">
+                        Use letters, spaces, apostrophes, periods, and hyphens only.
+                    </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.firstName">{{serverErrors.firstName}}</span>
+                </div>
+
+                <div class="input-field col s12 m4 registration-input registration-name-input">
+                    <i class="material-icons prefix">person_outline</i>
+                    <input id="middle_name"
+                           name="middleName"
+                           ng-class="{ 'invalid': serverErrors.middleName }"
+                           ng-change="serverErrors.middleName = null"
+                           type="text"
+                           maxlength="50"
+                           ng-model="middleName"
+                           ng-model-options="{ allowInvalid: true }"
+                           ng-maxlength="50"
+                           ng-pattern="/^$|^[A-Za-z .'-]+$/" />
+                    <label for="middle_name">Middle Name (Optional)</label>
+                    <span class="validation-message"
+                          ng-show="(registrationForm.middleName.$dirty || registrationForm.middleName.$touched || registrationSubmitted) && (registrationForm.middleName.$error.pattern || registrationForm.middleName.$error.maxlength)">
+                        Middle name may contain up to 50 characters: letters, spaces, apostrophes, periods, and hyphens only.
+                    </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.middleName">{{serverErrors.middleName}}</span>
+                </div>
+
+                <div class="input-field col s12 m4 registration-input registration-name-input">
+                    <i class="material-icons prefix">person</i>
+                    <input id="last_name"
+                           name="lastName"
+                           ng-class="{ 'invalid': serverErrors.lastName }"
+                           ng-change="serverErrors.lastName = null"
+                           type="text"
+                           maxlength="50"
+                           ng-model="lastName"
+                           ng-model-options="{ allowInvalid: true }"
+                           ng-minlength="2"
+                           ng-maxlength="50"
+                           ng-pattern="/^[A-Za-z .'-]+$/"
+                           required />
+                    <label for="last_name">Last Name <span class="required-mark" aria-hidden="true">*</span></label>
+
+                    <span class="validation-message"
+                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && registrationForm.lastName.$error.required">
+                        Last name is required.
+                    </span>
+                    <span class="validation-message"
+                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && (registrationForm.lastName.$error.minlength || registrationForm.lastName.$error.maxlength)">
+                        Last name must contain 2–50 characters.
+                    </span>
+                    <span class="validation-message"
+                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && registrationForm.lastName.$error.pattern">
+                        Use letters, spaces, apostrophes, periods, and hyphens only.
+                    </span>
+                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.lastName">{{serverErrors.lastName}}</span>
+                </div>
+
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">badge</i>
                     <input id="member_id"
@@ -102,68 +183,6 @@
                         Username already exists.
                     </span>
                     <span class="validation-message red-text" role="alert" ng-show="serverErrors.username">{{serverErrors.username}}</span>
-                </div>
-
-                <div class="input-field col s12 m6 registration-input">
-                    <i class="material-icons prefix">person</i>
-                    <input id="first_name"
-                           name="firstName"
-                           ng-class="{ 'invalid': serverErrors.firstName }"
-                           ng-change="serverErrors.firstName = null"
-                           type="text"
-                           maxlength="50"
-                           ng-model="firstName"
-                           ng-model-options="{ allowInvalid: true }"
-                           ng-minlength="2"
-                           ng-maxlength="50"
-                           ng-pattern="/^[A-Za-z .'-]+$/"
-                           required />
-                    <label for="first_name">First Name <span class="required-mark" aria-hidden="true">*</span></label>
-
-                    <span class="validation-message"
-                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && registrationForm.firstName.$error.required">
-                        First name is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && (registrationForm.firstName.$error.minlength || registrationForm.firstName.$error.maxlength)">
-                        First name must contain 2–50 characters.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && registrationForm.firstName.$error.pattern">
-                        Use letters, spaces, apostrophes, periods, and hyphens only.
-                    </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.firstName">{{serverErrors.firstName}}</span>
-                </div>
-
-                <div class="input-field col s12 m6 registration-input">
-                    <i class="material-icons prefix">person</i>
-                    <input id="last_name"
-                           name="lastName"
-                           ng-class="{ 'invalid': serverErrors.lastName }"
-                           ng-change="serverErrors.lastName = null"
-                           type="text"
-                           maxlength="50"
-                           ng-model="lastName"
-                           ng-model-options="{ allowInvalid: true }"
-                           ng-minlength="2"
-                           ng-maxlength="50"
-                           ng-pattern="/^[A-Za-z .'-]+$/"
-                           required />
-                    <label for="last_name">Last Name <span class="required-mark" aria-hidden="true">*</span></label>
-
-                    <span class="validation-message"
-                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && registrationForm.lastName.$error.required">
-                        Last name is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && (registrationForm.lastName.$error.minlength || registrationForm.lastName.$error.maxlength)">
-                        Last name must contain 2–50 characters.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && registrationForm.lastName.$error.pattern">
-                        Use letters, spaces, apostrophes, periods, and hyphens only.
-                    </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.lastName">{{serverErrors.lastName}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
@@ -357,7 +376,6 @@
             <span class="member-count">Total: {{userarray.length}}</span>
         </div>
 
-        <p class="grey-text">Only members registered in this browser session are shown. When editing, enter and confirm a valid password.</p>
         <p ng-show="membersLoading">Loading saved members...</p>
         <p class="red-text" role="alert" ng-show="membersError">{{membersError}}</p>
         <button type="button" class="btn-flat" ng-show="membersError" ng-disabled="membersLoading || isSaving || isDeleting" ng-click="loadMembersFunc()">Retry loading members</button>
@@ -366,7 +384,6 @@
             <p>No registrations have been saved during this visit.</p>
         </div>
 
-        <p class="grey-text text-darken-1">Register, Save Changes, and Delete save changes to MySQL. This table shows members registered during this visit; refreshing clears the display but does not undo saved changes. Only records created in the current session can be changed. Account login is for a later stage.</p>
         <div class="responsive-table-container" ng-show="userarray.length > 0">
             <table class="highlight member-table">
                 <thead>

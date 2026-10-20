@@ -2064,3 +2064,157 @@ table td {
         padding-top: 45px;
     }
 }
+
+/* Registration form refresh — intentionally scoped; member table is unchanged. */
+.registration-card .registration-card-header {
+    margin-bottom: 22px;
+}
+
+.registration-card .registration-form-surface {
+    padding: 26px 28px 24px;
+    border: 1px solid #e3eaf6;
+    background: #f8faff;
+    border-radius: 16px;
+}
+
+.registration-card .registration-form-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 18px 18px;
+    margin: 0;
+}
+
+    .registration-card .registration-form-grid > .col {
+        float: none !important;
+        width: auto !important;
+        min-width: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+        grid-column: span 3;
+    }
+    /* The first three inputs form the first row on desktop. */
+    .registration-card .registration-form-grid > .registration-name-input {
+        grid-column: span 2;
+    }
+
+.registration-card .registration-input,
+.registration-card .select-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 0;
+    padding: 0 !important;
+}
+
+    .registration-card .registration-input > label,
+    .registration-card .select-field > label {
+        position: static !important;
+        display: block !important;
+        order: 0;
+        width: auto !important;
+        margin: 0 0 7px !important;
+        padding: 0 !important;
+        transform: none !important;
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+        font-weight: 650;
+        color: #22385e !important;
+        pointer-events: auto;
+    }
+
+    .registration-card .registration-input > input,
+    .registration-card .select-field > select.browser-default {
+        display: block !important;
+        box-sizing: border-box !important;
+        order: 1;
+        width: 100% !important;
+        height: 44px !important;
+        margin: 0 !important;
+        border: 1px solid #d6e0ef !important;
+        border-radius: 8px !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        color: #10254a !important;
+        font-size: 13px;
+    }
+
+    .registration-card .registration-input > input {
+        padding: 0 12px 0 40px !important;
+    }
+
+    .registration-card .select-field > select.browser-default {
+        padding: 0 12px !important;
+    }
+
+    .registration-card .registration-input > input:focus,
+    .registration-card .select-field > select:focus {
+        outline: none !important;
+        border-color: #4e58ed !important;
+        box-shadow: 0 0 0 3px rgba(78,88,237,.12) !important;
+    }
+    /* Center icons in the 44px input field; Materialize's prefix styles
+   previously made their line box 44px tall, pushing the glyph down. */
+    .registration-card .registration-input > .prefix {
+        position: absolute !important;
+        top: 35px !important;
+        left: 13px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 20px !important;
+        height: 22px !important;
+        line-height: 22px !important;
+        font-size: 19px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #7587af;
+        pointer-events: none;
+    }
+
+    .registration-card .registration-input > input {
+        padding-left: 42px !important;
+    }
+
+    .registration-card .registration-input > .validation-message,
+    .registration-card .select-field > .validation-message {
+        position: static;
+        order: 2;
+        margin: 5px 0 0 !important;
+        line-height: 1.4;
+    }
+
+.registration-card .form-button-row {
+    margin-top: 22px;
+}
+
+.registration-card .form-button {
+    border-radius: 8px;
+    height: 48px;
+}
+
+@media (max-width: 800px) {
+    .registration-card .registration-form-grid > .registration-name-input {
+        grid-column: span 2;
+    }
+
+    .registration-card .registration-form-surface {
+        padding: 22px 20px;
+    }
+}
+
+@media (max-width: 650px) {
+    .registration-card .registration-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+        .registration-card .registration-form-grid > .col,
+        .registration-card .registration-form-grid > .registration-name-input {
+            grid-column: 1;
+        }
+
+    .registration-card .form-button-row,
+    .registration-card .form-button-row.editing-actions {
+        grid-template-columns: 1fr;
+    }
+}

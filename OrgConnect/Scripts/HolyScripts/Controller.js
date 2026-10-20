@@ -173,7 +173,7 @@
             $scope.serverErrors = {};
 
             if (registrationForm.$invalid) {
-                var labels = { memberID: "Member ID", username: "Username", firstName: "First Name", lastName: "Last Name", email: "Email", contactNumber: "Contact Number", password: "Password", confirmPassword: "Confirm Password", committee: "Group / Committee", position: "Role" };
+                var labels = { memberID: "Member ID", username: "Username", firstName: "First Name", middleName: "Middle Name", lastName: "Last Name", email: "Email", contactNumber: "Contact Number", password: "Password", confirmPassword: "Confirm Password", committee: "Group / Committee", position: "Role" };
                 var invalidFields = [];
                 angular.forEach(registrationForm.$error, function (controls) {
                     angular.forEach(controls, function (control) {
@@ -214,6 +214,7 @@
             var userData = {
                 MemberID: $scope.memberID.toUpperCase(),
                 FName: $scope.firstName,
+                MName: ($scope.middleName || "").trim(),
                 LName: $scope.lastName,
                 Username: $scope.username,
                 Email: $scope.email.trim().toLowerCase(),
@@ -252,6 +253,7 @@
             $scope.serverErrors = {};
             $scope.memberID = user.MemberID;
             $scope.firstName = user.FName;
+            $scope.middleName = user.MName || "";
             $scope.lastName = user.LName;
             $scope.username = user.Username;
             $scope.email = user.Email;
@@ -279,7 +281,7 @@
             $scope.serverErrors = {};
 
             if (registrationForm.$invalid) {
-                var labels = { memberID: "Member ID", username: "Username", firstName: "First Name", lastName: "Last Name", email: "Email", contactNumber: "Contact Number", password: "Password", confirmPassword: "Confirm Password", committee: "Group / Committee", position: "Role" };
+                var labels = { memberID: "Member ID", username: "Username", firstName: "First Name", middleName: "Middle Name", lastName: "Last Name", email: "Email", contactNumber: "Contact Number", password: "Password", confirmPassword: "Confirm Password", committee: "Group / Committee", position: "Role" };
                 var invalidFields = [];
                 angular.forEach(registrationForm.$error, function (controls) {
                     angular.forEach(controls, function (control) {
@@ -322,6 +324,7 @@
                 DatabaseID: originalRow.DatabaseID,
                 MemberID: $scope.memberID.toUpperCase(),
                 FName: $scope.firstName,
+                MName: ($scope.middleName || "").trim(),
                 LName: $scope.lastName,
                 Username: $scope.username,
                 Email: $scope.email.trim().toLowerCase(),
@@ -393,6 +396,7 @@
             $scope.serverErrors = {};
             $scope.memberID = "";
             $scope.firstName = "";
+            $scope.middleName = "";
             $scope.lastName = "";
             $scope.username = "";
             $scope.email = "";
