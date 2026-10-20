@@ -3,13 +3,14 @@
     Layout = "~/Views/Shared/_MainLayout.cshtml";
 }
 
-<div class="container page-section" ng-init="loadRegistrationDataFunc(); loadMembersFunc()">
+<div class="container page-section" ng-init="loadRegistrationDataFunc()">
     <div class="center-align">
         <h1 class="page-title">Member Registration</h1>
-        <p class="page-subtitle">Register a member profile and save a disabled account record in the database.</p>
+        <p class="page-subtitle">Register a member and save their account and membership in the database.</p>
     </div>
 
     <div class="card content-card registration-card">
+
         <div class="registration-card-header">
             <div class="registration-title-group">
                 <span class="registration-header-icon">
@@ -18,20 +19,19 @@
                 <div>
                     <span class="registration-step">MEMBER INFORMATION</span>
                     <h5 class="form-heading">
-                        {{ isEditing ? "Update Member" : "Register New Member" }}
+                        Register New Member
                     </h5>
-                    <p class="registration-helper">Complete the member's profile, contact, and organization details.</p>
+                    <p class="registration-helper">Complete the member's account, contact, and organization details.</p>
                 </div>
             </div>
-
+            
         </div>
 
-
         <form name="registrationForm" class="registration-form-surface"
-              ng-submit="isEditing ? updateFunc(registrationForm) : registrationFunc(registrationForm)"
+              ng-submit="registrationFunc(registrationForm)"
               novalidate>
             @Html.AntiForgeryToken()
-            <p class="blue-text text-darken-2">Password setup and login are deferred. This form saves your member details and a disabled account record; no password is collected.</p>
+            <p class="grey-text text-darken-1">Classroom demonstration: use sample details and a dummy password. Account login is not implemented yet.</p>
             <p class="blue-text" ng-show="optionsLoading">Loading committees and positions...</p>
             <p class="red-text" role="alert" ng-show="optionsError">{{optionsError}}</p>
             <button type="button" class="btn-flat" ng-show="optionsError" ng-click="loadRegistrationDataFunc()">Retry loading options</button>
@@ -210,7 +210,58 @@
                     </span>
                 </div>
 
+                <div class="input-field col s12 m6 registration-input password-input">
+                    <i class="material-icons prefix">lock</i>
+                    <input id="password"
+                           name="password"
+                           type="password"
+                           maxlength="32"
+                           ng-model="password"
+                           ng-model-options="{ allowInvalid: true }"
+                           ng-change="validatePasswordMatch(registrationForm)"
+                           ng-minlength="8"
+                           ng-maxlength="32"
+                           ng-pattern="passwordPattern"
+                           autocomplete="new-password"
+                           required />
+                    <label for="password">Password <span class="required-mark" aria-hidden="true">*</span></label>
 
+                    <span class="validation-message"
+                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && registrationForm.password.$error.required">
+                        Password is required.
+                    </span>
+                    <span class="validation-message"
+                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && !registrationForm.password.$error.required && (registrationForm.password.$error.minlength || registrationForm.password.$error.maxlength)">
+                        Password must contain 8–32 characters.
+                    </span>
+                    <span class="validation-message"
+                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && !registrationForm.password.$error.required && !registrationForm.password.$error.minlength && !registrationForm.password.$error.maxlength && registrationForm.password.$error.pattern">
+                        Include uppercase, lowercase, number, and special character.
+                    </span>
+                </div>
+
+                <div class="input-field col s12 m6 registration-input password-input">
+                    <i class="material-icons prefix">lock_outline</i>
+                    <input id="confirm_password"
+                           name="confirmPassword"
+                           type="password"
+                           maxlength="32"
+                           ng-model="confirmPassword"
+                           ng-model-options="{ allowInvalid: true }"
+                           ng-change="validatePasswordMatch(registrationForm)"
+                           autocomplete="new-password"
+                           required />
+                    <label for="confirm_password">Confirm Password <span class="required-mark" aria-hidden="true">*</span></label>
+
+                    <span class="validation-message"
+                          ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) && registrationForm.confirmPassword.$error.required">
+                        Please confirm the password.
+                    </span>
+                    <span class="validation-message"
+                          ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) && !registrationForm.confirmPassword.$error.required && registrationForm.confirmPassword.$error.passwordMatch">
+                        Passwords do not match.
+                    </span>
+                </div>
 
                 <div class="col s12 m6 select-field registration-select">
                     <label for="committee">Group / Committee <span class="required-mark" aria-hidden="true">*</span></label>
@@ -254,17 +305,17 @@
 
             <div class="form-button-row">
                 <div>
-                    <button type="submit" ng-disabled="isSaving || optionsLoading || optionsError || membersLoading || deletingID !== null"
+                    <button type="submit" ng-disabled="isSaving || optionsLoading || optionsError"
                             class="btn-large waves-effect waves-light form-button primary-form-button">
                         <i class="material-icons">person_add</i>
-                        <span>{{ isEditing ? "Save Changes" : "Register Member" }}</span>
+                        <span>Register Member</span>
                     </button>
                 </div>
 
                 <div>
                     <button type="button"
                             class="btn-large waves-effect registration-clear-button form-button"
-                            ng-disabled="isSaving || deletingID !== null" ng-click="clearRegistrationFunc(registrationForm)">
+                            ng-click="clearRegistrationFunc(registrationForm)">
                         <i class="material-icons">restart_alt</i>
                         <span>Clear Fields</span>
                     </button>
@@ -275,19 +326,16 @@
 
     <div class="card content-card member-table-card">
         <div class="table-heading-row">
-            <h5 class="form-heading">Saved Members — Current Session</h5>
+            <h5 class="form-heading">Saved During This Visit</h5>
             <span class="member-count">Total: {{userarray.length}}</span>
         </div>
 
         <div class="empty-table-message" ng-show="userarray.length === 0">
             <i class="material-icons">group_off</i>
-            <p>No registered records are available in this session.</p>
+            <p>No registrations have been saved during this visit.</p>
         </div>
 
-        <p class="grey-text text-darken-1">MP3 demonstration: this page reads, updates, and deletes only members registered in your current browser session. Refreshing reloads these records from MySQL. Session expiration hides them here but does not delete them. Only disabled accounts awaiting password setup are managed here. An executive directory/login is for a later stage.</p>
-        <p class="blue-text" ng-show="membersLoading">Loading saved records...</p>
-        <p class="red-text" role="alert" ng-show="membersError">{{membersError}}</p>
-        <button type="button" class="btn-flat" ng-disabled="membersLoading || isSaving || deletingID !== null" ng-click="loadMembersFunc()">Refresh saved records</button>
+        <p class="grey-text text-darken-1">This list shows successful registrations made during this page visit. Refreshing clears this display, but saved records remain in MySQL. Check HeidiSQL to verify them. Editing, deletion, and account login are for a later stage.</p>
         <div class="responsive-table-container" ng-show="userarray.length > 0">
             <table class="highlight member-table">
                 <thead>
@@ -299,8 +347,7 @@
                         <th>Contact Number</th>
                         <th>Group / Committee</th>
                         <th>Role</th>
-                        <th>Action</th>
-
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -312,16 +359,6 @@
                         <td data-label="Contact Number">{{user.ContactNumber}}</td>
                         <td data-label="Group / Committee">{{user.Committee}}</td>
                         <td data-label="Role">{{user.Position}}</td>
-                        <td data-label="Action" class="action-column">
-                            <button type="button" class="btn-small waves-effect waves-light blue" title="Edit member"
-                                    ng-disabled="isSaving || optionsLoading || membersLoading || deletingID !== null" ng-click="editFunc($index)">
-                                <i class="material-icons">edit</i>
-                            </button>
-                            <button type="button" class="btn-small waves-effect waves-light red darken-2" title="Delete member"
-                                    ng-disabled="isSaving || membersLoading || deletingID !== null" ng-click="deleteFunc($index)">
-                                <i class="material-icons">delete</i>
-                            </button>
-                        </td>
                     </tr>
                 </tbody>
             </table>
