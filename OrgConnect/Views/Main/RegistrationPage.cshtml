@@ -6,7 +6,7 @@
 <div class="container page-section" ng-init="loadRegistrationDataFunc(); loadMembersFunc()">
     <div class="center-align">
         <h1 class="page-title">Member Registration</h1>
-        <p class="page-subtitle">Register a member and save their account and membership in the database.</p>
+        <p class="page-subtitle">Register and manage organization members.</p>
     </div>
 
     <div class="card content-card registration-card">
@@ -19,7 +19,7 @@
                 <div>
                     <span class="registration-step">MEMBER INFORMATION</span>
                     <h5 class="form-heading">
-                        {{ isEditing ? "Update Member in Table" : "Register New Member" }}
+                        {{ isEditing ? "Update Member" : "Register New Member" }}
                     </h5>
                     <p class="registration-helper">Complete the member's account, contact, and organization details.</p>
                 </div>
@@ -27,53 +27,47 @@
 
         </div>
 
-        <form name="registrationForm" class="registration-form-surface"
-              ng-submit="registrationFunc(registrationForm)"
-              novalidate>
+        <form name="registrationForm" class="registration-form-surface" ng-submit="registrationFunc(registrationForm)" novalidate>
             @Html.AntiForgeryToken()
-            <p class="blue-text text-darken-2" role="status" ng-show="isEditing">Editing a registered member. Save Changes will update the database.</p>
+            <p class="blue-text text-darken-2" role="status" ng-show="isEditing">Editing a registered member. Select Save Changes to finish.</p>
             <p class="blue-text" ng-show="optionsLoading">Loading committees and positions...</p>
 
+            <!-- member details -->
             <div class="row registration-form-grid">
                 <div class="input-field col s12 m4 registration-input registration-name-input">
                     <i class="material-icons prefix">person</i>
                     <input id="first_name"
-                           name="firstName"
-                           type="text"
-                           maxlength="50"
+                           name="firstName" type="text" maxlength="50"
                            ng-model="firstName"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-minlength="2"
-                           ng-maxlength="50"
-                           ng-pattern="/^[A-Za-z .'-]+$/"
-                           required />
+                           ng-minlength="2" ng-maxlength="50"
+                           ng-pattern="/^[A-Za-z .'-]+$/" required />
                     <label for="first_name">First Name <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && registrationForm.firstName.$error.required">
-                        First name is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && (registrationForm.firstName.$error.minlength || registrationForm.firstName.$error.maxlength)">
-                        First name must contain 2–50 characters.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && registrationForm.firstName.$error.pattern">
-                        Use letters, spaces, apostrophes, periods, and hyphens only.
-                    </span>
+                    <div class="validation-message"
+                         ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) &&
+                                  registrationForm.firstName.$invalid">
+                        <div ng-show="registrationForm.firstName.$error.required">
+                            First name is required.
+                        </div>
+                        <div ng-show="(registrationForm.firstName.$error.minlength || registrationForm.firstName.$error.maxlength)">
+                            First name must contain 2–50 characters.
+                        </div>
+                        <div ng-show="registrationForm.firstName.$error.pattern">
+                            Use letters, spaces, apostrophes, periods, and hyphens only.
+                        </div>
+                    </div>
                 </div>
 
                 <div class="input-field col s12 m4 registration-input registration-name-input">
                     <i class="material-icons prefix">person_outline</i>
                     <input id="middle_name"
-                           name="middleName"
-                           type="text"
-                           maxlength="50"
+                           name="middleName" type="text" maxlength="50"
                            ng-model="middleName"
-                           ng-model-options="{ allowInvalid: true }"
-                           ng-maxlength="50"
+                           ng-model-options="{ allowInvalid: true }" ng-maxlength="50"
                            ng-pattern="/^$|^[A-Za-z .'-]+$/" />
                     <label for="middle_name">Middle Name (Optional)</label>
+
                     <span class="validation-message"
                           ng-show="(registrationForm.middleName.$dirty || registrationForm.middleName.$touched || registrationSubmitted) && (registrationForm.middleName.$error.pattern || registrationForm.middleName.$error.maxlength)">
                         Middle name may contain up to 50 characters: letters, spaces, apostrophes, periods, and hyphens only.
@@ -83,53 +77,48 @@
                 <div class="input-field col s12 m4 registration-input registration-name-input">
                     <i class="material-icons prefix">person</i>
                     <input id="last_name"
-                           name="lastName"
-                           type="text"
-                           maxlength="50"
+                           name="lastName" type="text" maxlength="50"
                            ng-model="lastName"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-minlength="2"
-                           ng-maxlength="50"
-                           ng-pattern="/^[A-Za-z .'-]+$/"
-                           required />
+                           ng-minlength="2" ng-maxlength="50"
+                           ng-pattern="/^[A-Za-z .'-]+$/" required />
                     <label for="last_name">Last Name <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && registrationForm.lastName.$error.required">
-                        Last name is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && (registrationForm.lastName.$error.minlength || registrationForm.lastName.$error.maxlength)">
-                        Last name must contain 2–50 characters.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && registrationForm.lastName.$error.pattern">
-                        Use letters, spaces, apostrophes, periods, and hyphens only.
-                    </span>
+                    <div class="validation-message"
+                         ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) &&
+                                  registrationForm.lastName.$invalid">
+                        <div ng-show="registrationForm.lastName.$error.required">
+                            Last name is required.
+                        </div>
+                        <div ng-show="(registrationForm.lastName.$error.minlength || registrationForm.lastName.$error.maxlength)">
+                            Last name must contain 2–50 characters.
+                        </div>
+                        <div ng-show="registrationForm.lastName.$error.pattern">
+                            Use letters, spaces, apostrophes, periods, and hyphens only.
+                        </div>
+                    </div>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">badge</i>
                     <input id="member_id"
-                           name="memberID"
-                           type="text"
-                           maxlength="8"
+                           name="memberID" type="text" maxlength="8"
                            ng-model="memberID"
                            ng-model-options="{ allowInvalid: true }"
                            ng-change="memberID = (memberID || '').toUpperCase()"
-                           ng-pattern="/^ORG-\d{4}$/"
-                           ng-maxlength="8"
-                           required />
+                           ng-pattern="/^ORG-\d{4}$/" ng-maxlength="8" required />
                     <label for="member_id">Member ID (ORG-0001) <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.memberID.$dirty || registrationForm.memberID.$touched || registrationSubmitted) && registrationForm.memberID.$error.required">
-                        Member ID is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.memberID.$dirty || registrationForm.memberID.$touched || registrationSubmitted) && registrationForm.memberID.$error.pattern">
-                        Use the format ORG-0001.
-                    </span>
+                    <div class="validation-message"
+                         ng-show="(registrationForm.memberID.$dirty || registrationForm.memberID.$touched || registrationSubmitted) &&
+                                  registrationForm.memberID.$invalid">
+                        <div ng-show="registrationForm.memberID.$error.required">
+                            Member ID is required.
+                        </div>
+                        <div ng-show="registrationForm.memberID.$error.pattern">
+                            Use the format ORG-0001.
+                        </div>
+                    </div>
                     <span class="validation-message"
                           ng-show="registrationSubmitted && memberID && registrationForm.memberID.$valid && isDuplicateMemberID()">
                         Member ID already exists.
@@ -139,29 +128,26 @@
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">account_circle</i>
                     <input id="username"
-                           name="username"
-                           type="text"
-                           maxlength="20"
+                           name="username" type="text" maxlength="20"
                            ng-model="username"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-minlength="4"
-                           ng-maxlength="20"
-                           ng-pattern="/^[A-Za-z0-9._-]+$/"
-                           required />
+                           ng-minlength="4" ng-maxlength="20"
+                           ng-pattern="/^[A-Za-z0-9._-]+$/" required />
                     <label for="username">Username <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.username.$dirty || registrationForm.username.$touched || registrationSubmitted) && registrationForm.username.$error.required">
-                        Username is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.username.$dirty || registrationForm.username.$touched || registrationSubmitted) && (registrationForm.username.$error.minlength || registrationForm.username.$error.maxlength)">
-                        Username must contain 4–20 characters.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.username.$dirty || registrationForm.username.$touched || registrationSubmitted) && registrationForm.username.$error.pattern">
-                        Use letters, numbers, periods, underscores, or hyphens only.
-                    </span>
+                    <div class="validation-message"
+                         ng-show="(registrationForm.username.$dirty || registrationForm.username.$touched || registrationSubmitted) &&
+                                  registrationForm.username.$invalid">
+                        <div ng-show="registrationForm.username.$error.required">
+                            Username is required.
+                        </div>
+                        <div ng-show="(registrationForm.username.$error.minlength || registrationForm.username.$error.maxlength)">
+                            Username must contain 4–20 characters.
+                        </div>
+                        <div ng-show="registrationForm.username.$error.pattern">
+                            Use letters, numbers, periods, underscores, or hyphens only.
+                        </div>
+                    </div>
                     <span class="validation-message"
                           ng-show="registrationSubmitted && username && registrationForm.username.$valid && isDuplicateUsername()">
                         Username already exists.
@@ -171,25 +157,22 @@
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">email</i>
                     <input id="email"
-                           name="email"
-                           type="email"
-                           maxlength="100"
+                           name="email" type="email" maxlength="100"
                            ng-model="email"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-pattern="emailPattern"
-                           ng-maxlength="100"
-                           ng-trim="true"
-                           required />
+                           ng-pattern="emailPattern" ng-maxlength="100" ng-trim="true" required />
                     <label for="email">Email Address <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.email.$dirty || registrationForm.email.$touched || registrationSubmitted) && registrationForm.email.$error.required">
-                        Email address is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.email.$dirty || registrationForm.email.$touched || registrationSubmitted) && !registrationForm.email.$error.required && (registrationForm.email.$error.email || registrationForm.email.$error.pattern)">
-                        Enter a complete email address, such as name@example.com.
-                    </span>
+                    <div class="validation-message"
+                         ng-show="(registrationForm.email.$dirty || registrationForm.email.$touched || registrationSubmitted) &&
+                                  registrationForm.email.$invalid">
+                        <div ng-show="registrationForm.email.$error.required">
+                            Email address is required.
+                        </div>
+                        <div ng-show="!registrationForm.email.$error.required && (registrationForm.email.$error.email || registrationForm.email.$error.pattern)">
+                            Enter a complete email address, such as name@example.com.
+                        </div>
+                    </div>
                     <span class="validation-message"
                           ng-show="registrationSubmitted && email && registrationForm.email.$valid && isDuplicateEmail()">
                         Email address already exists.
@@ -199,26 +182,23 @@
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">phone</i>
                     <input id="contact_number"
-                           name="contactNumber"
-                           type="tel"
-                           inputmode="numeric"
-                           maxlength="11"
+                           name="contactNumber" type="tel" inputmode="numeric" maxlength="11"
                            ng-model="contactNumber"
                            ng-model-options="{ allowInvalid: true }"
                            ng-change="numbersOnlyFunc()"
-                           ng-pattern="/^09\d{9}$/"
-                           ng-maxlength="11"
-                           required />
+                           ng-pattern="/^09\d{9}$/" ng-maxlength="11" required />
                     <label for="contact_number">Contact Number (09XXXXXXXXX) <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.contactNumber.$dirty || registrationForm.contactNumber.$touched || registrationSubmitted) && registrationForm.contactNumber.$error.required">
-                        Contact number is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.contactNumber.$dirty || registrationForm.contactNumber.$touched || registrationSubmitted) && registrationForm.contactNumber.$error.pattern">
-                        Enter an 11-digit Philippine mobile number.
-                    </span>
+                    <div class="validation-message"
+                         ng-show="(registrationForm.contactNumber.$dirty || registrationForm.contactNumber.$touched || registrationSubmitted) &&
+                                  registrationForm.contactNumber.$invalid">
+                        <div ng-show="registrationForm.contactNumber.$error.required">
+                            Contact number is required.
+                        </div>
+                        <div ng-show="registrationForm.contactNumber.$error.pattern">
+                            Enter an 11-digit Philippine mobile number.
+                        </div>
+                    </div>
                     <span class="validation-message"
                           ng-show="registrationSubmitted && contactNumber && registrationForm.contactNumber.$valid && isDuplicateContactNumber()">
                         Contact number already exists.
@@ -228,64 +208,55 @@
                 <div class="input-field col s12 m6 registration-input password-input">
                     <i class="material-icons prefix">lock</i>
                     <input id="password"
-                           name="password"
-                           type="password"
-                           maxlength="32"
+                           name="password" type="password" maxlength="32"
                            ng-model="password"
                            ng-model-options="{ allowInvalid: true }"
                            ng-change="validatePasswordMatch(registrationForm)"
-                           ng-minlength="8"
-                           ng-maxlength="32"
+                           ng-minlength="8" ng-maxlength="32"
                            ng-pattern="passwordPattern"
-                           autocomplete="new-password"
-                           required />
+                           autocomplete="new-password" required />
                     <label for="password">Password <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && registrationForm.password.$error.required">
-                        Password is required.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && !registrationForm.password.$error.required && (registrationForm.password.$error.minlength || registrationForm.password.$error.maxlength)">
-                        Password must contain 8–32 characters.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && !registrationForm.password.$error.required && !registrationForm.password.$error.minlength && !registrationForm.password.$error.maxlength && registrationForm.password.$error.pattern">
-                        Include uppercase, lowercase, number, and special character.
-                    </span>
+                    <div class="validation-message"
+                         ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) &&
+                                  registrationForm.password.$invalid">
+                        <div ng-show="registrationForm.password.$error.required">
+                            Password is required.
+                        </div>
+                        <div ng-show="!registrationForm.password.$error.required && (registrationForm.password.$error.minlength || registrationForm.password.$error.maxlength)">
+                            Password must contain 8–32 characters.
+                        </div>
+                        <div ng-show="!registrationForm.password.$error.required && !registrationForm.password.$error.minlength && !registrationForm.password.$error.maxlength && registrationForm.password.$error.pattern">
+                            Include uppercase, lowercase, number, and special character.
+                        </div>
+                    </div>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input password-input">
                     <i class="material-icons prefix">lock_outline</i>
                     <input id="confirm_password"
-                           name="confirmPassword"
-                           type="password"
-                           maxlength="32"
+                           name="confirmPassword" type="password" maxlength="32"
                            ng-model="confirmPassword"
                            ng-model-options="{ allowInvalid: true }"
                            ng-change="validatePasswordMatch(registrationForm)"
-                           autocomplete="new-password"
-                           required />
+                           autocomplete="new-password" required />
                     <label for="confirm_password">Confirm Password <span class="required-mark" aria-hidden="true">*</span></label>
 
-                    <span class="validation-message"
-                          ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) && registrationForm.confirmPassword.$error.required">
-                        Please confirm the password.
-                    </span>
-                    <span class="validation-message"
-                          ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) && !registrationForm.confirmPassword.$error.required && registrationForm.confirmPassword.$error.passwordMatch">
-                        Passwords do not match.
-                    </span>
+                    <div class="validation-message"
+                         ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) &&
+                                  registrationForm.confirmPassword.$invalid">
+                        <div ng-show="registrationForm.confirmPassword.$error.required">
+                            Please confirm the password.
+                        </div>
+                        <div ng-show="!registrationForm.confirmPassword.$error.required && registrationForm.confirmPassword.$error.passwordMatch">
+                            Passwords do not match.
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col s12 m6 select-field registration-select">
                     <label for="committee">Group / Committee <span class="required-mark" aria-hidden="true">*</span></label>
-                    <select id="committee"
-                            name="committee"
-                            class="browser-default"
-                            ng-model="committee"
-                            ng-change="committeeChangedFunc()"
-                            required>
+                    <select id="committee" name="committee" class="browser-default" ng-model="committee" ng-change="committeeChangedFunc()" required>
                         <option value="">Select a group or committee</option>
                         <option ng-repeat="item in committeeList" value="{{item}}">
                             {{item}}
@@ -300,11 +271,7 @@
 
                 <div class="col s12 m6 select-field registration-select">
                     <label for="position">Role <span class="required-mark" aria-hidden="true">*</span></label>
-                    <select id="position"
-                            name="position"
-                            class="browser-default"
-                            ng-model="position"
-                            required>
+                    <select id="position" name="position" class="browser-default" ng-model="position" required>
                         <option value="">Select a role</option>
                         <option ng-repeat="item in positionList" value="{{item}}">
                             {{item}}
@@ -320,17 +287,14 @@
 
             <div class="form-button-row">
                 <div>
-                    <button type="submit" ng-disabled="isSaving || isDeleting || optionsLoading"
-                            class="btn-large waves-effect waves-light form-button primary-form-button">
+                    <button type="submit" ng-disabled="isSaving || isDeleting || optionsLoading" class="btn-large waves-effect waves-light form-button primary-form-button">
                         <i class="material-icons">{{isEditing ? "save" : "person_add"}}</i>
                         <span>{{isEditing ? "Save Changes" : "Register Member"}}</span>
                     </button>
                 </div>
 
                 <div>
-                    <button type="button"
-                            class="btn-large waves-effect registration-clear-button form-button"
-                            ng-disabled="isSaving || isDeleting" ng-click="clearRegistrationFunc(registrationForm)">
+                    <button type="button" class="btn-large waves-effect registration-clear-button form-button" ng-disabled="isSaving || isDeleting" ng-click="clearRegistrationFunc(registrationForm)">
                         <i class="material-icons">restart_alt</i>
                         <span>{{isEditing ? "Cancel Edit" : "Clear Fields"}}</span>
                     </button>
@@ -339,6 +303,7 @@
         </form>
     </div>
 
+    <!-- registered members -->
     <div class="directory-card">
         <div class="directory-header">
             <div class="directory-icon">
@@ -381,15 +346,10 @@
                         </td>
                         <td>
                             <div class="directory-actions">
-                                <button type="button" class="directory-button edit-button"
-                                        title="Edit member" aria-label="Edit member"
-                                        ng-disabled="isSaving || isDeleting || optionsLoading"
-                                        ng-click="editFunc($index, registrationForm)">
+                                <button type="button" class="directory-button edit-button" title="Edit member" aria-label="Edit member" ng-disabled="isSaving || isDeleting || optionsLoading" ng-click="editFunc($index, registrationForm)">
                                     <i class="material-icons" aria-hidden="true">edit</i>
                                 </button>
-                                <button type="button" class="directory-button delete-button"
-                                        title="Delete member" aria-label="Delete member"
-                                        ng-disabled="isSaving || isDeleting" ng-click="deleteFunc($index)">
+                                <button type="button" class="directory-button delete-button" title="Delete member" aria-label="Delete member" ng-disabled="isSaving || isDeleting" ng-click="deleteFunc($index)">
                                     <i class="material-icons" aria-hidden="true">delete</i>
                                 </button>
                             </div>

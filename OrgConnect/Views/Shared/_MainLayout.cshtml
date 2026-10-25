@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
-    <link rel="stylesheet" href="@Url.Content("~/Content/OrgConnect.css?v=6")" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/OrgConnect.css?v=7")" />
 </head>
 
 <body ng-app="OrgConnectModule" ng-controller="OrgConnectController">
@@ -113,16 +113,16 @@
     <script src="@Url.Content("~/Scripts/HolyScripts/Controller.js")"></script>
 
     <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    var materialize = Function("return window.M;")();
+                        document.addEventListener("DOMContentLoaded", function () {
+                            var materialize = Function("return window.M;")();
 
-                    if (materialize) {
-                        var sidenavElements =
-                            document.querySelectorAll(".sidenav");
+                            if (materialize) {
+                                var sidenavElements =
+                                    document.querySelectorAll(".sidenav");
 
-                        materialize.Sidenav.init(sidenavElements);
-                    }
-                });
+                                materialize.Sidenav.init(sidenavElements);
+                            }
+                        });
     </script>
 
     @RenderSection("scripts", required: false)

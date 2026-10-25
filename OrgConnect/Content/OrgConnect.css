@@ -50,18 +50,19 @@ img {
     max-width: 1180px;
 }
 
-/* Shared navigation */
+/* Shared navigation: compact navy-and-gold reference header. */
 .orgconnect-nav {
-    height: 94px;
+    height: 80px;
     line-height: normal;
     background: var(--navy-dark);
+    box-shadow: 0 4px 14px rgba(3, 26, 61, .12) !important;
 }
 
     .orgconnect-nav .nav-wrapper.orgconnect-header-inner {
         display: flex;
-        width: calc(100% - 48px);
+        width: 85%;
         max-width: 1480px;
-        height: 94px;
+        height: 80px;
         margin: 0 auto;
         padding: 0;
         align-items: center;
@@ -84,26 +85,29 @@ img {
     display: inline-flex;
     height: auto;
     align-items: center;
-    gap: 13px;
+    gap: 18px;
     color: #fff;
     font-family: "Manrope", Arial, sans-serif;
-    font-size: 1.7rem;
+    font-size: 24px;
     font-weight: 800;
+    letter-spacing: -.5px;
     line-height: 1;
+    white-space: nowrap;
     transform: none;
 }
 
 .orgconnect-nav .brand-mark {
     position: relative;
     display: inline-flex;
-    width: 48px;
-    height: 52px;
-    flex: 0 0 48px;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
     align-items: center;
     justify-content: center;
-    border-radius: 11px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 10px;
     color: var(--navy-dark);
-    background: var(--gold);
+    background: #ffbf26;
 }
 
     .orgconnect-nav .brand-mark i {
@@ -125,65 +129,83 @@ img {
 .orgconnect-nav .nav-links {
     position: static;
     display: flex;
-    height: 94px;
+    height: 100%;
     margin: 0;
     align-items: center;
-    gap: 7px;
+    gap: 28px;
 }
 
     .orgconnect-nav .nav-links li {
         height: auto;
+        float: none;
     }
 
         .orgconnect-nav .nav-links li a {
-            display: flex;
-            height: 52px;
-            padding: 0 17px;
+            display: inline-flex;
+            height: 40px;
+            padding: 0;
             align-items: center;
+            justify-content: center;
+            border-radius: 7px;
             color: #fff;
             background: transparent;
             font-family: "Manrope", Arial, sans-serif;
-            font-size: 1rem;
+            font-size: 16px;
             font-weight: 600;
-            line-height: 52px;
+            line-height: 1;
+            white-space: nowrap;
+            transition: color .18s ease, background-color .18s ease;
         }
 
             .orgconnect-nav .nav-links li a:hover {
-                color: var(--gold);
+                color: #ffbf26;
                 background: transparent;
             }
 
     .orgconnect-nav .nav-links .nav-login-button {
-        margin-left: 12px;
-        padding: 0 25px;
-        border-radius: 9px;
+        height: 40px;
+        min-width: 112px;
+        margin: 0;
+        padding: 0 18px;
+        gap: 8px;
+        border: 1px solid rgba(255, 255, 255, .18);
+        border-radius: 8px;
         color: var(--navy-dark);
-        background: var(--gold);
+        background: #ffbf26;
     }
 
         .orgconnect-nav .nav-links .nav-login-button:hover {
             color: var(--navy-dark);
-            background: #ffc83d;
+            background: #ffcc4d;
         }
 
 .orgconnect-nav .nav-login-button i {
-    height: auto;
-    margin: 0 9px 0 0;
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    align-items: center;
     color: var(--navy-dark);
-    font-size: 24px;
-    line-height: 1;
+    float: none;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.orgconnect-nav a:focus-visible {
+    outline: 2px solid #ffbf26;
+    outline-offset: 5px;
 }
 
 .orgconnect-nav .sidenav-trigger {
-    height: 52px;
+    height: 44px;
     margin: 0;
     color: #fff;
-    line-height: 52px;
+    line-height: 44px;
 }
 
     .orgconnect-nav .sidenav-trigger i {
-        height: 52px;
-        line-height: 52px;
+        height: 44px;
+        line-height: 44px;
     }
 
 /* Shared logo styling outside the desktop navigation. */
@@ -1732,7 +1754,7 @@ table td {
 
         .orgconnect-nav .brand-mark {
             width: 40px;
-            height: 42px;
+            height: 40px;
             flex-basis: 40px;
         }
 

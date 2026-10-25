@@ -124,7 +124,144 @@
 
     $scope.registrationFunc = function (registrationForm) {
         $scope.registrationSubmitted = true;
+        // Registration validation messages
+        if (registrationForm.firstName.$error.required) {
+            $scope.SweetAlertError("First name is required.");
+            return;
+        }
+
+        if (registrationForm.firstName.$error.minlength || registrationForm.firstName.$error.maxlength) {
+            $scope.SweetAlertError("First name must contain 2–50 characters.");
+            return;
+        }
+
+        if (registrationForm.firstName.$error.pattern) {
+            $scope.SweetAlertError("Use letters, spaces, apostrophes, periods, and hyphens only.");
+            return;
+        }
+
+        if (registrationForm.middleName.$error.pattern || registrationForm.middleName.$error.maxlength) {
+            $scope.SweetAlertError("Middle name may contain up to 50 characters: letters, spaces, apostrophes, periods, and hyphens only.");
+            return;
+        }
+
+        if (registrationForm.lastName.$error.required) {
+            $scope.SweetAlertError("Last name is required.");
+            return;
+        }
+
+        if (registrationForm.lastName.$error.minlength || registrationForm.lastName.$error.maxlength) {
+            $scope.SweetAlertError("Last name must contain 2–50 characters.");
+            return;
+        }
+
+        if (registrationForm.lastName.$error.pattern) {
+            $scope.SweetAlertError("Use letters, spaces, apostrophes, periods, and hyphens only.");
+            return;
+        }
+
+        if (registrationForm.memberID.$error.required) {
+            $scope.SweetAlertError("Member ID is required.");
+            return;
+        }
+
+        if (registrationForm.memberID.$error.pattern) {
+            $scope.SweetAlertError("Use the format ORG-0001.");
+            return;
+        }
+
+        if ($scope.memberID && registrationForm.memberID.$valid && $scope.isDuplicateMemberID()) {
+            $scope.SweetAlertError("Member ID already exists.");
+            return;
+        }
+
+        if (registrationForm.username.$error.required) {
+            $scope.SweetAlertError("Username is required.");
+            return;
+        }
+
+        if (registrationForm.username.$error.minlength || registrationForm.username.$error.maxlength) {
+            $scope.SweetAlertError("Username must contain 4–20 characters.");
+            return;
+        }
+
+        if (registrationForm.username.$error.pattern) {
+            $scope.SweetAlertError("Use letters, numbers, periods, underscores, or hyphens only.");
+            return;
+        }
+
+        if ($scope.username && registrationForm.username.$valid && $scope.isDuplicateUsername()) {
+            $scope.SweetAlertError("Username already exists.");
+            return;
+        }
+
+        if (registrationForm.email.$error.required) {
+            $scope.SweetAlertError("Email address is required.");
+            return;
+        }
+
+        if (!registrationForm.email.$error.required && (registrationForm.email.$error.email || registrationForm.email.$error.pattern)) {
+            $scope.SweetAlertError("Enter a complete email address, such as name@example.com.");
+            return;
+        }
+
+        if ($scope.email && registrationForm.email.$valid && $scope.isDuplicateEmail()) {
+            $scope.SweetAlertError("Email address already exists.");
+            return;
+        }
+
+        if (registrationForm.contactNumber.$error.required) {
+            $scope.SweetAlertError("Contact number is required.");
+            return;
+        }
+
+        if (registrationForm.contactNumber.$error.pattern) {
+            $scope.SweetAlertError("Enter an 11-digit Philippine mobile number.");
+            return;
+        }
+
+        if ($scope.contactNumber && registrationForm.contactNumber.$valid && $scope.isDuplicateContactNumber()) {
+            $scope.SweetAlertError("Contact number already exists.");
+            return;
+        }
+
+        if (registrationForm.password.$error.required) {
+            $scope.SweetAlertError("Password is required.");
+            return;
+        }
+
+        if (!registrationForm.password.$error.required && (registrationForm.password.$error.minlength || registrationForm.password.$error.maxlength)) {
+            $scope.SweetAlertError("Password must contain 8–32 characters.");
+            return;
+        }
+
+        if (!registrationForm.password.$error.required && !registrationForm.password.$error.minlength && !registrationForm.password.$error.maxlength && registrationForm.password.$error.pattern) {
+            $scope.SweetAlertError("Include uppercase, lowercase, number, and special character.");
+            return;
+        }
+
+        if (registrationForm.confirmPassword.$error.required) {
+            $scope.SweetAlertError("Please confirm the password.");
+            return;
+        }
+
+        if (!registrationForm.confirmPassword.$error.required && registrationForm.confirmPassword.$error.passwordMatch) {
+            $scope.SweetAlertError("Passwords do not match.");
+            return;
+        }
+
+        if (registrationForm.committee.$error.required) {
+            $scope.SweetAlertError("Group or committee is required.");
+            return;
+        }
+
+        if (registrationForm.position.$error.required) {
+            $scope.SweetAlertError("Role is required.");
+            return;
+        }
+
         if (!$scope.formIsValid(registrationForm)) {
+            $scope.SweetAlertError("Please check the registration details.");
             return;
         }
 
