@@ -13,11 +13,6 @@ namespace OrgConnect.Models.Maps
         {
             HasKey(x => x.userID);
             ToTable("tbl_users");
-            Property(x => x.username).HasMaxLength(20).IsRequired();
-            Property(x => x.email).HasMaxLength(100).IsRequired();
-            Property(x => x.passwordHash).HasMaxLength(255).IsRequired();
-            Property(x => x.createdAt).HasColumnType("datetime");
-            Property(x => x.updatedAt).HasColumnType("datetime");
         }
     }
 }

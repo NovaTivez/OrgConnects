@@ -13,10 +13,6 @@ namespace OrgConnect.Models.Maps
         {
             HasKey(x => x.positionID);
             ToTable("tbl_positions");
-            Property(x => x.positionName).HasMaxLength(50).IsRequired();
-            Property(x => x.positionDescription).HasColumnType("text").IsOptional();
-            Property(x => x.createdAt).HasColumnType("datetime");
-            Property(x => x.updatedAt).HasColumnType("datetime");
         }
     }
 }

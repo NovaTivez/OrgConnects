@@ -13,9 +13,6 @@ namespace OrgConnect.Models.Maps
         {
             HasKey(x => x.membershipStatusID);
             ToTable("tbl_membership_status");
-            Property(x => x.statusName).HasMaxLength(50).IsRequired();
-            Property(x => x.createdAt).HasColumnType("datetime");
-            Property(x => x.updatedAt).HasColumnType("datetime");
         }
     }
 }

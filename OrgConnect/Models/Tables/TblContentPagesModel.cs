@@ -14,6 +14,5 @@ namespace OrgConnect.Models.Tables
         public int updatedBy { get; set; }
         public DateTime? createdAt { get; set; }
         public DateTime? updatedAt { get; set; }
-        public virtual TblUsersModel updatedByReference { get; set; }
     }
 }

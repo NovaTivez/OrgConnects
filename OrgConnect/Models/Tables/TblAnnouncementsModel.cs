@@ -15,7 +15,5 @@ namespace OrgConnect.Models.Tables
         public DateTime? publishedAt { get; set; }
         public DateTime? createdAt { get; set; }
         public DateTime? updatedAt { get; set; }
-        public virtual TblAnnouncementStatusModel announcementStatusIDReference { get; set; }
-        public virtual TblUsersModel createdByReference { get; set; }
     }
 }

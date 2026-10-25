@@ -14,12 +14,6 @@ namespace OrgConnect.Models.Maps
         {
             HasKey(x => x.chartID);
             ToTable("tbl_dashboard_charts");
-            Property(x => x.chartTitle).HasMaxLength(100).IsRequired();
-            Property(x => x.chartDescription).HasMaxLength(255).IsOptional();
-            Property(x => x.chartType).HasMaxLength(20).IsRequired();
-            Property(x => x.chartSource).HasMaxLength(100).IsRequired();
-            Property(x => x.createdAt).HasColumnType("datetime");
-            Property(x => x.updatedAt).HasColumnType("datetime");
         }
     }
 }

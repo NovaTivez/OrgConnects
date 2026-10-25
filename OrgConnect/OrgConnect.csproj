@@ -161,7 +161,6 @@
     <Compile Include="Models\Maps\TblOrganizationSettingsMap.cs" />
     <Compile Include="Models\Maps\TblPositionsMap.cs" />
     <Compile Include="Models\Maps\TblUsersMap.cs" />
-    <Compile Include="Models\OrgConnectRequestModels.cs" />
     <Compile Include="Models\Tables\TblAnnouncementsModel.cs" />
     <Compile Include="Models\Tables\TblAnnouncementStatusModel.cs" />
     <Compile Include="Models\Tables\TblCommitteePositionsModel.cs" />
@@ -173,6 +172,7 @@
     <Compile Include="Models\Tables\TblOrganizationSettingsModel.cs" />
     <Compile Include="Models\Tables\TblPositionsModel.cs" />
     <Compile Include="Models\Tables\TblUsersModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

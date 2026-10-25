@@ -13,10 +13,6 @@ namespace OrgConnect.Models.Maps
         {
             HasKey(x => x.committeeID);
             ToTable("tbl_committees");
-            Property(x => x.committeeName).HasMaxLength(100).IsRequired();
-            Property(x => x.committeeDescription).HasColumnType("text").IsOptional();
-            Property(x => x.createdAt).HasColumnType("datetime");
-            Property(x => x.updatedAt).HasColumnType("datetime");
         }
     }
 }

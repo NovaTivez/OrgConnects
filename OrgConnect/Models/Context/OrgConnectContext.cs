@@ -3,27 +3,31 @@ using OrgConnect.Models.Maps;
 using OrgConnect.Models.Tables;
 using System.Data.Entity;
 
-namespace OrgConnect.Models
+namespace OrgConnect.Models.Context
 {
     [DbConfigurationType(typeof(MySqlEFConfiguration))]
     public class OrgConnectContext : DbContext
     {
-        public OrgConnectContext() : base("name=orgConnectDb")
+        static OrgConnectContext()
         {
             Database.SetInitializer<OrgConnectContext>(null);
         }
 
-        public DbSet<TblUsersModel> tbl_users { get; set; }
-        public DbSet<TblMembersModel> tbl_members { get; set; }
-        public DbSet<TblCommitteesModel> tbl_committees { get; set; }
-        public DbSet<TblPositionsModel> tbl_positions { get; set; }
-        public DbSet<TblCommitteePositionsModel> tbl_committee_positions { get; set; }
-        public DbSet<TblMembershipStatusModel> tbl_membership_status { get; set; }
-        public DbSet<TblAnnouncementStatusModel> tbl_announcement_status { get; set; }
-        public DbSet<TblContentPagesModel> tbl_content_pages { get; set; }
-        public DbSet<TblAnnouncementsModel> tbl_announcements { get; set; }
-        public DbSet<TblOrganizationSettingsModel> tbl_organization_settings { get; set; }
-        public DbSet<TblDashboardChartsModel> tbl_dashboard_charts { get; set; }
+        public OrgConnectContext() : base("Name=orgConnectDb")
+        {
+        }
+
+        public virtual DbSet<TblUsersModel> tbl_users { get; set; }
+        public virtual DbSet<TblMembersModel> tbl_members { get; set; }
+        public virtual DbSet<TblCommitteesModel> tbl_committees { get; set; }
+        public virtual DbSet<TblPositionsModel> tbl_positions { get; set; }
+        public virtual DbSet<TblCommitteePositionsModel> tbl_committee_positions { get; set; }
+        public virtual DbSet<TblMembershipStatusModel> tbl_membership_status { get; set; }
+        public virtual DbSet<TblAnnouncementStatusModel> tbl_announcement_status { get; set; }
+        public virtual DbSet<TblContentPagesModel> tbl_content_pages { get; set; }
+        public virtual DbSet<TblAnnouncementsModel> tbl_announcements { get; set; }
+        public virtual DbSet<TblOrganizationSettingsModel> tbl_organization_settings { get; set; }
+        public virtual DbSet<TblDashboardChartsModel> tbl_dashboard_charts { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

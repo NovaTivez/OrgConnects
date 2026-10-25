@@ -12,13 +12,7 @@ namespace OrgConnect.Models.Maps
         public TblCommitteePositionsMap()
         {
             HasKey(x => x.committeePositionID);
-            Ignore(x => x.committeeIDReference);
-            Ignore(x => x.positionIDReference);
             ToTable("tbl_committee_positions");
-            Property(x => x.createdAt).HasColumnType("datetime");
-            Property(x => x.updatedAt).HasColumnType("datetime");
-
-
         }
     }
 }

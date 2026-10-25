@@ -5,7 +5,7 @@ using System.Web;
 
 namespace OrgConnect.Models
 {
-    public class MemberInput
+    public class UserModel
     {
         public int DatabaseID { get; set; }
         public string MemberID { get; set; }
