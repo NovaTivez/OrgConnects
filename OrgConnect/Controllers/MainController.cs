@@ -64,7 +64,6 @@ namespace OrgConnect.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public JsonResult CreateMember(UserModel umodel)
         {
             try
@@ -117,7 +116,6 @@ namespace OrgConnect.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public JsonResult UpdateMember(UserModel umodel)
         {
             try
@@ -203,7 +201,6 @@ namespace OrgConnect.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public JsonResult RemoveMember(int memberID)
         {
             try
@@ -228,4 +225,3 @@ namespace OrgConnect.Controllers
         }
     }
 }
-

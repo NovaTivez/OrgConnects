@@ -28,22 +28,17 @@
         </div>
 
         <form name="registrationForm" class="registration-form-surface"
-              ng-submit="isEditing ? updateFunc(registrationForm) : registrationFunc(registrationForm)"
+              ng-submit="registrationFunc(registrationForm)"
               novalidate>
             @Html.AntiForgeryToken()
             <p class="blue-text text-darken-2" role="status" ng-show="isEditing">Editing a registered member. Save Changes will update the database.</p>
-            <p class="red-text" role="alert" ng-show="serverErrors.form">{{serverErrors.form}}</p>
             <p class="blue-text" ng-show="optionsLoading">Loading committees and positions...</p>
-            <p class="red-text" role="alert" ng-show="optionsError">{{optionsError}}</p>
-            <button type="button" class="btn-flat" ng-show="optionsError" ng-click="loadRegistrationDataFunc()">Retry loading options</button>
 
             <div class="row registration-form-grid">
                 <div class="input-field col s12 m4 registration-input registration-name-input">
                     <i class="material-icons prefix">person</i>
                     <input id="first_name"
                            name="firstName"
-                           ng-class="{ 'invalid': serverErrors.firstName }"
-                           ng-change="serverErrors.firstName = null"
                            type="text"
                            maxlength="50"
                            ng-model="firstName"
@@ -66,15 +61,12 @@
                           ng-show="(registrationForm.firstName.$dirty || registrationForm.firstName.$touched || registrationSubmitted) && registrationForm.firstName.$error.pattern">
                         Use letters, spaces, apostrophes, periods, and hyphens only.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.firstName">{{serverErrors.firstName}}</span>
                 </div>
 
                 <div class="input-field col s12 m4 registration-input registration-name-input">
                     <i class="material-icons prefix">person_outline</i>
                     <input id="middle_name"
                            name="middleName"
-                           ng-class="{ 'invalid': serverErrors.middleName }"
-                           ng-change="serverErrors.middleName = null"
                            type="text"
                            maxlength="50"
                            ng-model="middleName"
@@ -86,15 +78,12 @@
                           ng-show="(registrationForm.middleName.$dirty || registrationForm.middleName.$touched || registrationSubmitted) && (registrationForm.middleName.$error.pattern || registrationForm.middleName.$error.maxlength)">
                         Middle name may contain up to 50 characters: letters, spaces, apostrophes, periods, and hyphens only.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.middleName">{{serverErrors.middleName}}</span>
                 </div>
 
                 <div class="input-field col s12 m4 registration-input registration-name-input">
                     <i class="material-icons prefix">person</i>
                     <input id="last_name"
                            name="lastName"
-                           ng-class="{ 'invalid': serverErrors.lastName }"
-                           ng-change="serverErrors.lastName = null"
                            type="text"
                            maxlength="50"
                            ng-model="lastName"
@@ -117,19 +106,17 @@
                           ng-show="(registrationForm.lastName.$dirty || registrationForm.lastName.$touched || registrationSubmitted) && registrationForm.lastName.$error.pattern">
                         Use letters, spaces, apostrophes, periods, and hyphens only.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.lastName">{{serverErrors.lastName}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">badge</i>
                     <input id="member_id"
                            name="memberID"
-                           ng-class="{ 'invalid': serverErrors.memberID }"
                            type="text"
                            maxlength="8"
                            ng-model="memberID"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-change="memberID = (memberID || '').toUpperCase(); serverErrors.memberID = null"
+                           ng-change="memberID = (memberID || '').toUpperCase()"
                            ng-pattern="/^ORG-\d{4}$/"
                            ng-maxlength="8"
                            required />
@@ -147,15 +134,12 @@
                           ng-show="registrationSubmitted && memberID && registrationForm.memberID.$valid && isDuplicateMemberID()">
                         Member ID already exists.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.memberID">{{serverErrors.memberID}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">account_circle</i>
                     <input id="username"
                            name="username"
-                           ng-class="{ 'invalid': serverErrors.username }"
-                           ng-change="serverErrors.username = null"
                            type="text"
                            maxlength="20"
                            ng-model="username"
@@ -182,15 +166,12 @@
                           ng-show="registrationSubmitted && username && registrationForm.username.$valid && isDuplicateUsername()">
                         Username already exists.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.username">{{serverErrors.username}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">email</i>
                     <input id="email"
                            name="email"
-                           ng-class="{ 'invalid': serverErrors.email }"
-                           ng-change="serverErrors.email = null"
                            type="email"
                            maxlength="100"
                            ng-model="email"
@@ -213,20 +194,18 @@
                           ng-show="registrationSubmitted && email && registrationForm.email.$valid && isDuplicateEmail()">
                         Email address already exists.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.email">{{serverErrors.email}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input">
                     <i class="material-icons prefix">phone</i>
                     <input id="contact_number"
                            name="contactNumber"
-                           ng-class="{ 'invalid': serverErrors.contactNumber }"
                            type="tel"
                            inputmode="numeric"
                            maxlength="11"
                            ng-model="contactNumber"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-change="numbersOnlyFunc(); serverErrors.contactNumber = null"
+                           ng-change="numbersOnlyFunc()"
                            ng-pattern="/^09\d{9}$/"
                            ng-maxlength="11"
                            required />
@@ -244,19 +223,17 @@
                           ng-show="registrationSubmitted && contactNumber && registrationForm.contactNumber.$valid && isDuplicateContactNumber()">
                         Contact number already exists.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.contactNumber">{{serverErrors.contactNumber}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input password-input">
                     <i class="material-icons prefix">lock</i>
                     <input id="password"
                            name="password"
-                           ng-class="{ 'invalid': serverErrors.password }"
                            type="password"
                            maxlength="32"
                            ng-model="password"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-change="validatePasswordMatch(registrationForm); serverErrors.password = null; serverErrors.confirmPassword = null"
+                           ng-change="validatePasswordMatch(registrationForm)"
                            ng-minlength="8"
                            ng-maxlength="32"
                            ng-pattern="passwordPattern"
@@ -276,19 +253,17 @@
                           ng-show="(registrationForm.password.$dirty || registrationForm.password.$touched || registrationSubmitted) && !registrationForm.password.$error.required && !registrationForm.password.$error.minlength && !registrationForm.password.$error.maxlength && registrationForm.password.$error.pattern">
                         Include uppercase, lowercase, number, and special character.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.password">{{serverErrors.password}}</span>
                 </div>
 
                 <div class="input-field col s12 m6 registration-input password-input">
                     <i class="material-icons prefix">lock_outline</i>
                     <input id="confirm_password"
                            name="confirmPassword"
-                           ng-class="{ 'invalid': serverErrors.confirmPassword }"
                            type="password"
                            maxlength="32"
                            ng-model="confirmPassword"
                            ng-model-options="{ allowInvalid: true }"
-                           ng-change="validatePasswordMatch(registrationForm); serverErrors.confirmPassword = null"
+                           ng-change="validatePasswordMatch(registrationForm)"
                            autocomplete="new-password"
                            required />
                     <label for="confirm_password">Confirm Password <span class="required-mark" aria-hidden="true">*</span></label>
@@ -301,17 +276,15 @@
                           ng-show="(registrationForm.confirmPassword.$dirty || registrationForm.confirmPassword.$touched || registrationSubmitted) && !registrationForm.confirmPassword.$error.required && registrationForm.confirmPassword.$error.passwordMatch">
                         Passwords do not match.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.confirmPassword">{{serverErrors.confirmPassword}}</span>
                 </div>
 
                 <div class="col s12 m6 select-field registration-select">
                     <label for="committee">Group / Committee <span class="required-mark" aria-hidden="true">*</span></label>
                     <select id="committee"
                             name="committee"
-                            ng-class="{ 'invalid': serverErrors.committee }"
                             class="browser-default"
                             ng-model="committee"
-                            ng-change="committeeChangedFunc(); serverErrors.committee = null"
+                            ng-change="committeeChangedFunc()"
                             required>
                         <option value="">Select a group or committee</option>
                         <option ng-repeat="item in committeeList" value="{{item}}">
@@ -323,15 +296,12 @@
                           ng-show="(registrationForm.committee.$dirty || registrationForm.committee.$touched || registrationSubmitted) && registrationForm.committee.$error.required">
                         Group or committee is required.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.committee">{{serverErrors.committee}}</span>
                 </div>
 
                 <div class="col s12 m6 select-field registration-select">
                     <label for="position">Role <span class="required-mark" aria-hidden="true">*</span></label>
                     <select id="position"
                             name="position"
-                            ng-class="{ 'invalid': serverErrors.position }"
-                            ng-change="serverErrors.position = null"
                             class="browser-default"
                             ng-model="position"
                             required>
@@ -345,13 +315,12 @@
                           ng-show="(registrationForm.position.$dirty || registrationForm.position.$touched || registrationSubmitted) && registrationForm.position.$error.required">
                         Role is required.
                     </span>
-                    <span class="validation-message red-text" role="alert" ng-show="serverErrors.position">{{serverErrors.position}}</span>
                 </div>
             </div>
 
             <div class="form-button-row">
                 <div>
-                    <button type="submit" ng-disabled="isSaving || isDeleting || optionsLoading || optionsError"
+                    <button type="submit" ng-disabled="isSaving || isDeleting || optionsLoading"
                             class="btn-large waves-effect waves-light form-button primary-form-button">
                         <i class="material-icons">{{isEditing ? "save" : "person_add"}}</i>
                         <span>{{isEditing ? "Save Changes" : "Register Member"}}</span>
@@ -370,22 +339,21 @@
         </form>
     </div>
 
-    <div class="card content-card member-table-card">
-        <div class="table-heading-row">
-            <h5 class="form-heading">Registration Table — This Visit</h5>
-            <span class="member-count">Total: {{userarray.length}}</span>
+    <div class="directory-card">
+        <div class="directory-header">
+            <div class="directory-icon">
+                <i class="material-icons" aria-hidden="true">groups</i>
+            </div>
+            <div>
+                <p class="directory-label">MEMBER DIRECTORY</p>
+                <h2 class="directory-title">Registered Members</h2>
+                <p class="directory-description">Manage your registered members and organization details.</p>
+            </div>
+            <span class="directory-total">Total: {{userarray.length}}</span>
         </div>
 
-        <p ng-show="membersLoading">Loading saved members...</p>
-        <p class="red-text" role="alert" ng-show="membersError">{{membersError}}</p>
-        <button type="button" class="btn-flat" ng-show="membersError" ng-disabled="membersLoading || isSaving || isDeleting" ng-click="loadMembersFunc()">Retry loading members</button>
-        <div class="empty-table-message" ng-show="userarray.length === 0">
-            <i class="material-icons">group_off</i>
-            <p>No registrations have been saved during this visit.</p>
-        </div>
-
-        <div class="responsive-table-container" ng-show="userarray.length > 0">
-            <table class="highlight member-table">
+        <div class="directory-table-wrap">
+            <table class="directory-table">
                 <thead>
                     <tr>
                         <th>Member ID</th>
@@ -396,33 +364,42 @@
                         <th>Group / Committee</th>
                         <th>Role</th>
                         <th>Actions</th>
-
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="user in userarray track by $index">
-                        <td data-label="Member ID">{{user.MemberID}}</td>
-                        <td data-label="Full Name">{{user.FName}} {{user.LName}}</td>
-                        <td data-label="Username">@@{{user.Username}}</td>
-                        <td data-label="Email">{{user.Email}}</td>
-                        <td data-label="Contact Number">{{user.ContactNumber}}</td>
-                        <td data-label="Group / Committee">{{user.Committee}}</td>
-                        <td data-label="Role">{{user.Position}}</td>
-                        <td data-label="Actions" class="action-column">
-                            <button type="button" class="btn-small waves-effect waves-light blue" title="Edit member" aria-label="Edit member"
-                                    ng-disabled="isSaving || isDeleting || optionsLoading" ng-click="editFunc($index, registrationForm)">
-                                <i class="material-icons" aria-hidden="true">edit</i>
-                            </button>
-                            <button type="button" class="btn-small waves-effect waves-light red darken-2" title="Delete from database" aria-label="Delete member from database"
-                                    ng-disabled="isSaving || isDeleting" ng-click="deleteFunc($index)">
-                                <i class="material-icons" aria-hidden="true">delete</i>
-                            </button>
+                        <td>{{user.MemberID}}</td>
+                        <td>{{user.FName}} {{user.LName}}</td>
+                        <td>@@{{user.Username}}</td>
+                        <td>{{user.Email}}</td>
+                        <td>{{user.ContactNumber}}</td>
+                        <td><span class="directory-badge">{{user.Committee}}</span></td>
+                        <td>
+                            <span class="directory-badge" ng-class="{'head-role': user.Position === 'Committee Head'}">
+                                {{user.Position}}
+                            </span>
                         </td>
+                        <td>
+                            <div class="directory-actions">
+                                <button type="button" class="directory-button edit-button"
+                                        title="Edit member" aria-label="Edit member"
+                                        ng-disabled="isSaving || isDeleting || optionsLoading"
+                                        ng-click="editFunc($index, registrationForm)">
+                                    <i class="material-icons" aria-hidden="true">edit</i>
+                                </button>
+                                <button type="button" class="directory-button delete-button"
+                                        title="Delete member" aria-label="Delete member"
+                                        ng-disabled="isSaving || isDeleting" ng-click="deleteFunc($index)">
+                                    <i class="material-icons" aria-hidden="true">delete</i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-show="userarray.length === 0">
+                        <td colspan="8"><div class="directory-empty">No registered members to display.</div></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
-

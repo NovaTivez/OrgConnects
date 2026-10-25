@@ -2218,3 +2218,282 @@ table td {
         grid-template-columns: 1fr;
     }
 }
+
+/* Member directory */
+.directory-card {
+    position: relative;
+    overflow: hidden;
+    margin-top: 30px;
+    padding: 24px;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #deebff;
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(31, 102, 214, .08);
+    font-family: inherit;
+    color: #123779;
+}
+
+    .directory-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #147cf3 0%, #147cf3 62%, #ffbd16 100%);
+    }
+
+.directory-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 6px 0 24px;
+}
+
+.directory-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 15px;
+    color: #fff;
+    background: linear-gradient(145deg, #1179f6, #0048b6);
+    box-shadow: 0 10px 20px rgba(0, 83, 190, .18);
+}
+
+    .directory-icon .material-icons {
+        font-size: 30px;
+    }
+
+.directory-label {
+    margin: 0 0 5px;
+    color: #0059d8;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.directory-title {
+    margin: 0;
+    color: #082967;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.directory-description {
+    margin: 6px 0 0;
+    color: #7b87ad;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.directory-total {
+    margin-left: auto;
+    padding: 10px 8px;
+    border-radius: 30px;
+    background: #eaf2ff;
+    color: #0055d6;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.directory-table-wrap {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #cbdfff;
+    border-radius: 15px;
+}
+
+.directory-card .directory-table {
+    width: 100%;
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+    .directory-card .directory-table thead {
+        background: #eef4ff;
+    }
+
+    .directory-card .directory-table th {
+        padding: 16px 8px;
+        color: #082b76;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: left;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        border-bottom: 1px solid #e1e8f3;
+        border-radius: 0;
+    }
+
+    .directory-card .directory-table td {
+        padding: 10px 8px;
+        height: auto;
+        color: #274579;
+        font-size: 13px;
+        text-align: left;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        border-bottom: 1px solid #e5ebf4;
+        border-radius: 0;
+    }
+
+    .directory-card .directory-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .directory-card .directory-table tbody tr:hover {
+        background: #f9fbff;
+    }
+
+.directory-badge {
+    display: inline-block;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    padding: 8px 10px;
+    border-radius: 28px;
+    background: #e8f1ff;
+    color: #005de9;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+    .directory-badge.head-role {
+        background: #fff4cc;
+        color: #a77500;
+    }
+
+.directory-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.directory-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 7px;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: none;
+    transition: opacity .15s;
+}
+
+    .directory-button.edit-button,
+    .directory-button.edit-button:focus {
+        background: #1d89ff;
+    }
+
+    .directory-button.delete-button,
+    .directory-button.delete-button:focus {
+        background: #ff5364;
+    }
+
+    .directory-button:hover {
+        opacity: .85;
+    }
+
+    .directory-button:disabled {
+        opacity: .45;
+        cursor: not-allowed;
+    }
+
+    .directory-button .material-icons {
+        font-size: 18px;
+    }
+
+.directory-empty {
+    padding: 40px;
+    text-align: center;
+    color: #7b87ad;
+}
+
+@media (max-width: 700px) {
+    .directory-card {
+        padding: 22px 16px;
+    }
+
+    .directory-header {
+        flex-wrap: wrap;
+        gap: 16px;
+        margin: 10px 0 24px;
+    }
+
+    .directory-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 16px;
+    }
+
+    .directory-title {
+        font-size: 18px;
+    }
+
+    .directory-label {
+        font-size: 12px;
+    }
+
+    .directory-description {
+        font-size: 15px;
+    }
+
+    .directory-total {
+        margin-left: 0;
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+}
+
+.directory-header > div:nth-child(2) {
+    min-width: 0;
+}
+
+.directory-card .directory-table th:nth-child(1) {
+    width: 9%;
+}
+
+.directory-card .directory-table th:nth-child(2) {
+    width: 11%;
+}
+
+.directory-card .directory-table th:nth-child(3) {
+    width: 9%;
+}
+
+.directory-card .directory-table th:nth-child(4) {
+    width: 16%;
+}
+
+.directory-card .directory-table th:nth-child(5) {
+    width: 12%;
+}
+
+.directory-card .directory-table th:nth-child(6) {
+    width: 18%;
+}
+
+.directory-card .directory-table th:nth-child(7) {
+    width: 15%;
+}
+
+.directory-card .directory-table th:nth-child(8) {
+    width: 10%;
+}
