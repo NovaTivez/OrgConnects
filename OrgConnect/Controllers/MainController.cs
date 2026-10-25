@@ -59,7 +59,7 @@ namespace OrgConnect.Controllers
             }
             catch (Exception ex)
             {
-                return Json(ex, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = ex.GetBaseException().Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -112,7 +112,7 @@ namespace OrgConnect.Controllers
             }
             catch (Exception ex)
             {
-                return Json(ex, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = ex.GetBaseException().Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -151,7 +151,7 @@ namespace OrgConnect.Controllers
             }
             catch (Exception ex)
             {
-                return Json(ex, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = ex.GetBaseException().Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -198,7 +198,7 @@ namespace OrgConnect.Controllers
             }
             catch (Exception ex)
             {
-                return Json(ex, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = ex.GetBaseException().Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -223,8 +223,9 @@ namespace OrgConnect.Controllers
             }
             catch (Exception ex)
             {
-                return Json(ex, JsonRequestBehavior.AllowGet);
+                return Json(new { Message = ex.GetBaseException().Message }, JsonRequestBehavior.AllowGet);
             }
         }
     }
 }
+

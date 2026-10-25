@@ -52,11 +52,11 @@
             $scope.registrationOptions = [];
             OrgConnectService.GetRegistrationDataFunc().then(function (response) {
                 $scope.optionsLoading = false;
-                if (!response.data.Success) {
-                    $scope.optionsError = response.data.Message;
+                if (!angular.isArray(response.data)) {
+                    $scope.optionsError = (response.data && response.data.Message) || "Could not load committees and positions.";
                     return;
                 }
-                $scope.registrationOptions = response.data.Options;
+                $scope.registrationOptions = response.data;
                 angular.forEach($scope.registrationOptions, function (item) {
                     if ($scope.committeeList.indexOf(item.Committee) === -1) {
                         $scope.committeeList.push(item.Committee);
@@ -80,11 +80,11 @@
             var getData = OrgConnectService.GetMembersFunc();
             getData.then(function (returnedData) {
                 $scope.membersLoading = false;
-                if (!returnedData.data.Success) {
-                    $scope.membersError = returnedData.data.Message;
+                if (!angular.isArray(returnedData.data)) {
+                    $scope.membersError = (returnedData.data && returnedData.data.Message) || "Could not load saved members.";
                     return;
                 }
-                $scope.userarray = returnedData.data.Members;
+                $scope.userarray = returnedData.data;
                 $scope.clearRegistrationFunc();
             }, function () {
                 $scope.membersLoading = false;
@@ -227,12 +227,12 @@
             OrgConnectService.CreateMemberFunc(userData).then(function (returnedData) {
                 $scope.isSaving = false;
                 var result = returnedData.data;
-                if (!result.Success) {
-                    $scope.serverErrors = result.FieldErrors || {};
-                    Swal.fire({ title: result.Title || "Registration Failed", text: result.Message, icon: "error", confirmButtonColor: "#0a4caf" });
+                if (!angular.isArray(result)) {
+                    $scope.serverErrors = (result && result.FieldErrors) || {};
+                    Swal.fire({ title: (result && result.Title) || "Registration Failed", text: (result && result.Message) || "The server returned an unexpected response.", icon: "error", confirmButtonColor: "#0a4caf" });
                     return;
                 }
-                $scope.userarray = result.Members;
+                $scope.userarray = returnedData.data;
                 Swal.fire({ title: "Registration Successful", text: "The organization member was registered.", icon: "success", confirmButtonColor: "#0a4caf" });
                 $scope.clearRegistrationFunc(registrationForm);
             }, function () {
@@ -241,7 +241,7 @@
             });
         };
 
-        // Edit the form, then submit changes through the service and C# controller.
+        // edit
         $scope.editFunc = function (userindex, registrationForm) {
             if ($scope.isSaving || $scope.isDeleting || !$scope.userarray[userindex]) {
                 return;
@@ -337,12 +337,12 @@
             OrgConnectService.UpdateMemberFunc(userData).then(function (returnedData) {
                 $scope.isSaving = false;
                 var result = returnedData.data;
-                if (!result.Success) {
-                    $scope.serverErrors = result.FieldErrors || {};
-                    Swal.fire({ title: result.Title || "Update Failed", text: result.Message, icon: "error", confirmButtonColor: "#0a4caf" });
+                if (!angular.isArray(result)) {
+                    $scope.serverErrors = (result && result.FieldErrors) || {};
+                    Swal.fire({ title: (result && result.Title) || "Update Failed", text: (result && result.Message) || "The server returned an unexpected response.", icon: "error", confirmButtonColor: "#0a4caf" });
                     return;
                 }
-                $scope.userarray = result.Members;
+                $scope.userarray = returnedData.data;
                 $scope.clearRegistrationFunc(registrationForm);
                 Swal.fire({ title: "Update Successful", text: "The member information was updated in the database.", icon: "success", confirmButtonColor: "#0a4caf" });
             }, function () {
@@ -373,11 +373,11 @@
                     }
                     OrgConnectService.RemoveMemberFunc(user.DatabaseID).then(function (returnedData) {
                         $scope.isDeleting = false;
-                        if (!returnedData.data.Success) {
-                            Swal.fire({ title: "Delete Failed", text: returnedData.data.Message, icon: "error", confirmButtonColor: "#0a4caf" });
+                        if (!angular.isArray(returnedData.data)) {
+                            Swal.fire({ title: "Delete Failed", text: (returnedData.data && returnedData.data.Message) || "The server returned an unexpected response.", icon: "error", confirmButtonColor: "#0a4caf" });
                             return;
                         }
-                        $scope.userarray = returnedData.data.Members;
+                        $scope.userarray = returnedData.data;
                         $scope.clearRegistrationFunc();
                         Swal.fire({ title: "Delete Successful", text: "The member and account were deleted from the database.", icon: "success", confirmButtonColor: "#0a4caf" });
                     }, function () {
@@ -422,21 +422,4 @@
             }, 0);
         };
 
-        $scope.databaseStatus = "Not checked";
-        $scope.databaseResult = null;
-        $scope.checkDatabaseFunc = function () {
-            $scope.databaseStatus = "Checking connection...";
-            $scope.databaseResult = null;
-            OrgConnectService.CheckDatabaseFunc().then(function (returnedData) {
-                $scope.databaseResult = returnedData.data;
-                $scope.databaseStatus = returnedData.data.Success
-                    ? "Database connected successfully."
-                    : returnedData.data.Message;
-            }, function () {
-                $scope.databaseStatus = "Database check failed. Check the connection settings and database setup.";
-            });
-        };
-
     });
-
-
