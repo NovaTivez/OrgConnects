@@ -12,7 +12,7 @@ namespace OrgConnect.Models.Tables
         public string pageTitle { get; set; }
         public string pageContent { get; set; }
         public int updatedBy { get; set; }
-        public DateTime? createdAt { get; set; }
-        public DateTime? updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 }

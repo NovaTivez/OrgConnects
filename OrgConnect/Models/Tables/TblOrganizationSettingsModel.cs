@@ -16,7 +16,7 @@ namespace OrgConnect.Models.Tables
         public string officeDays { get; set; }
         public string officeHours { get; set; }
         public int updatedBy { get; set; }
-        public DateTime? createdAt { get; set; }
-        public DateTime? updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 }

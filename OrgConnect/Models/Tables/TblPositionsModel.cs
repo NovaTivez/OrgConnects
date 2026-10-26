@@ -10,7 +10,7 @@ namespace OrgConnect.Models.Tables
         public int positionID { get; set; }
         public string positionName { get; set; }
         public string positionDescription { get; set; }
-        public DateTime? createdAt { get; set; }
-        public DateTime? updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 }

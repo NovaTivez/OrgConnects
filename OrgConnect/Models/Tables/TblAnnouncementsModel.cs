@@ -12,8 +12,8 @@ namespace OrgConnect.Models.Tables
         public string message { get; set; }
         public int announcementStatusID { get; set; }
         public int createdBy { get; set; }
-        public DateTime? publishedAt { get; set; }
-        public DateTime? createdAt { get; set; }
-        public DateTime? updatedAt { get; set; }
+        public DateTime publishedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace OrgConnect.Models.Tables
         public string email { get; set; }
         public string passwordHash { get; set; }
         public int isActive { get; set; }
-        public DateTime? createdAt { get; set; }
-        public DateTime? updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 }

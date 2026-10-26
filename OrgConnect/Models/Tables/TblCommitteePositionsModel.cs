@@ -12,7 +12,7 @@ namespace OrgConnect.Models.Tables
         public int positionID { get; set; }
         public int hasAdminAccess { get; set; }
         public int isActive { get; set; }
-        public DateTime? createdAt { get; set; }
-        public DateTime? updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 }
